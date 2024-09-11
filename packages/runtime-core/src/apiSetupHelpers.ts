@@ -381,7 +381,17 @@ export function withDefaults<
   return null as any
 }
 
-export function useSlots(): SetupContext['slots'] {
+// we allow using a children type to return the correct slots typing. Vue
+// implicitly calls slot functions, so we adjust the typing for that
+export function useSlots<T>(children: T): T extends Record<string, any>
+  ? {
+      [K in keyof T]: T[K] extends () => any ? T[K] : () => T[K]
+    }
+  : {
+      default: T extends () => any ? T : () => T
+    }
+export function useSlots(): SetupContext['slots']
+export function useSlots() {
   return getContext().slots
 }
 

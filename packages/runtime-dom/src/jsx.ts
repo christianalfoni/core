@@ -1,5 +1,5 @@
 import type * as csstype from 'csstype'
-import type { VNodeRef } from 'vue'
+import type { VNode, VNodeRef } from 'vue'
 
 /**
  * Based on JSX types for Surplus and Inferno, taken from `dom-expressions` and adapted to Vue
@@ -2285,3 +2285,5 @@ export type FunctionalAttributes = {
       : HTMLElement
   >
 }
+
+export type VueNode = VNode | string | number | null | VueNode[]
