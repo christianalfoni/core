@@ -1,36 +1,301 @@
-// Note: this file is auto concatenated to the end of the bundled d.ts during
-// build.
+import type * as csstype from 'csstype'
+import type { VNodeRef } from 'vue'
 
-// This code is based on react definition in DefinitelyTyped published under the MIT license.
-//      Repository: https://github.com/DefinitelyTyped/DefinitelyTyped
-//      Path in the repository: types/react/index.d.ts
-//
-// Copyrights of original definition are:
-//      AssureSign <http://www.assuresign.com>
-//      Microsoft <https://microsoft.com>
-//                 John Reilly <https://github.com/johnnyreilly>
-//      Benoit Benezech <https://github.com/bbenezech>
-//      Patricio Zavolinsky <https://github.com/pzavolinsky>
-//      Digiguru <https://github.com/digiguru>
-//      Eric Anderson <https://github.com/ericanderson>
-//      Dovydas Navickas <https://github.com/DovydasNavickas>
-//                 Josh Rutherford <https://github.com/theruther4d>
-//                 Guilherme Hübner <https://github.com/guilhermehubner>
-//                 Ferdy Budhidharma <https://github.com/ferdaber>
-//                 Johann Rakotoharisoa <https://github.com/jrakotoharisoa>
-//                 Olivier Pascal <https://github.com/pascaloliv>
-//                 Martin Hochel <https://github.com/hotell>
-//                 Frank Li <https://github.com/franklixuefei>
-//                 Jessica Franco <https://github.com/Jessidhia>
-//                 Saransh Kataria <https://github.com/saranshkataria>
-//                 Kanitkorn Sujautra <https://github.com/lukyth>
-//                 Sebastian Silbermann <https://github.com/eps1lon>
+/**
+ * Based on JSX types for Surplus and Inferno, taken from `dom-expressions` and adapted to Vue
+ *
+ * https://github.com/adamhaile/surplus/blob/master/index.d.ts
+ * https://github.com/infernojs/inferno/blob/master/packages/inferno/src/core/types.ts
+ */
+type DOMElement = Element
 
-import type * as CSS from 'csstype'
+interface EventHandler<T, E extends Event> {
+  (
+    e: E & {
+      currentTarget: T
+      target: DOMElement
+    },
+  ): void
+}
+interface BoundEventHandler<T, E extends Event> {
+  0: (
+    data: any,
+    e: E & {
+      currentTarget: T
+      target: DOMElement
+    },
+  ) => void
+  1: any
+}
+type EventHandlerUnion<T, E extends Event> =
+  | EventHandler<T, E>
+  | BoundEventHandler<T, E>
+interface InputEventHandler<T, E extends InputEvent> {
+  (
+    e: E & {
+      currentTarget: T
+      target: T extends
+        | HTMLInputElement
+        | HTMLSelectElement
+        | HTMLTextAreaElement
+        ? T
+        : DOMElement
+    },
+  ): void
+}
+interface BoundInputEventHandler<T, E extends InputEvent> {
+  0: (
+    data: any,
+    e: E & {
+      currentTarget: T
+      target: T extends
+        | HTMLInputElement
+        | HTMLSelectElement
+        | HTMLTextAreaElement
+        ? T
+        : DOMElement
+    },
+  ) => void
+  1: any
+}
+type InputEventHandlerUnion<T, E extends InputEvent> =
+  | InputEventHandler<T, E>
+  | BoundInputEventHandler<T, E>
+interface ChangeEventHandler<T, E extends Event> {
+  (
+    e: E & {
+      currentTarget: T
+      target: T extends
+        | HTMLInputElement
+        | HTMLSelectElement
+        | HTMLTextAreaElement
+        ? T
+        : DOMElement
+    },
+  ): void
+}
+interface BoundChangeEventHandler<T, E extends Event> {
+  0: (
+    data: any,
+    e: E & {
+      currentTarget: T
+      target: T extends
+        | HTMLInputElement
+        | HTMLSelectElement
+        | HTMLTextAreaElement
+        ? T
+        : DOMElement
+    },
+  ) => void
+  1: any
+}
+type ChangeEventHandlerUnion<T, E extends Event> =
+  | ChangeEventHandler<T, E>
+  | BoundChangeEventHandler<T, E>
+interface FocusEventHandler<T, E extends FocusEvent> {
+  (
+    e: E & {
+      currentTarget: T
+      target: T extends
+        | HTMLInputElement
+        | HTMLSelectElement
+        | HTMLTextAreaElement
+        ? T
+        : DOMElement
+    },
+  ): void
+}
+interface BoundFocusEventHandler<T, E extends FocusEvent> {
+  0: (
+    data: any,
+    e: E & {
+      currentTarget: T
+      target: T extends
+        | HTMLInputElement
+        | HTMLSelectElement
+        | HTMLTextAreaElement
+        ? T
+        : DOMElement
+    },
+  ) => void
+  1: any
+}
+type FocusEventHandlerUnion<T, E extends FocusEvent> =
+  | FocusEventHandler<T, E>
+  | BoundFocusEventHandler<T, E>
+declare const SERIALIZABLE: unique symbol
+interface SerializableAttributeValue {
+  toString(): string
+  [SERIALIZABLE]: never
+}
+
+type Accessor<T> = () => T
+interface Directives {}
+interface DirectiveFunctions {
+  [x: string]: (el: DOMElement, accessor: Accessor<any>) => void
+}
+interface ExplicitProperties {}
+interface ExplicitAttributes {}
+interface CustomEvents {}
+interface CustomCaptureEvents {}
+type DirectiveAttributes = {
+  [Key in keyof Directives as `use:${Key}`]?: Directives[Key]
+}
+type DirectiveFunctionAttributes<T> = {
+  [K in keyof DirectiveFunctions as string extends K
+    ? never
+    : `use:${K}`]?: DirectiveFunctions[K] extends (
+    el: infer E, // will be unknown if not provided
+    ...rest: infer R // use rest so that we can check whether it's provided or not
+  ) => void
+    ? T extends E // everything extends unknown if E is unknown
+      ? R extends [infer A] // check if has accessor provided
+        ? A extends Accessor<infer V>
+          ? V // it's an accessor
+          : never // it isn't, type error
+        : true // no accessor provided
+      : never // T is the wrong element
+    : never
+}
+type PropAttributes = {
+  [Key in keyof ExplicitProperties as `prop:${Key}`]?: ExplicitProperties[Key]
+}
+type AttrAttributes = {
+  [Key in keyof ExplicitAttributes as `attr:${Key}`]?: ExplicitAttributes[Key]
+}
+type OnAttributes<T> = {
+  [Key in keyof CustomEvents as `on:${Key}`]?: EventHandler<
+    T,
+    CustomEvents[Key]
+  >
+}
+type OnCaptureAttributes<T> = {
+  [Key in keyof CustomCaptureEvents as `oncapture:${Key}`]?: EventHandler<
+    T,
+    CustomCaptureEvents[Key]
+  >
+}
+interface DOMAttributes<T>
+  extends CustomAttributes<T>,
+    DirectiveAttributes,
+    DirectiveFunctionAttributes<T>,
+    PropAttributes,
+    AttrAttributes,
+    OnAttributes<T>,
+    OnCaptureAttributes<T>,
+    CustomEventHandlersCamelCase<T> {
+  innerHTML?: string | undefined
+  innerText?: string | number | undefined
+  textContent?: string | number | undefined
+  // camel case events
+  onCopy?: EventHandlerUnion<T, ClipboardEvent> | undefined
+  onCut?: EventHandlerUnion<T, ClipboardEvent> | undefined
+  onPaste?: EventHandlerUnion<T, ClipboardEvent> | undefined
+  onCompositionEnd?: EventHandlerUnion<T, CompositionEvent> | undefined
+  onCompositionStart?: EventHandlerUnion<T, CompositionEvent> | undefined
+  onCompositionUpdate?: EventHandlerUnion<T, CompositionEvent> | undefined
+  onFocusOut?: FocusEventHandlerUnion<T, FocusEvent> | undefined
+  onFocusIn?: FocusEventHandlerUnion<T, FocusEvent> | undefined
+  onEncrypted?: EventHandlerUnion<T, Event> | undefined
+  onDragExit?: EventHandlerUnion<T, DragEvent> | undefined
+  // lower case events
+  oncopy?: EventHandlerUnion<T, ClipboardEvent> | undefined
+  oncut?: EventHandlerUnion<T, ClipboardEvent> | undefined
+  onpaste?: EventHandlerUnion<T, ClipboardEvent> | undefined
+  oncompositionend?: EventHandlerUnion<T, CompositionEvent> | undefined
+  oncompositionstart?: EventHandlerUnion<T, CompositionEvent> | undefined
+  oncompositionupdate?: EventHandlerUnion<T, CompositionEvent> | undefined
+  onfocusout?: FocusEventHandlerUnion<T, FocusEvent> | undefined
+  onfocusin?: FocusEventHandlerUnion<T, FocusEvent> | undefined
+  onencrypted?: EventHandlerUnion<T, Event> | undefined
+  ondragexit?: EventHandlerUnion<T, DragEvent> | undefined
+  children?: {}
+}
+interface CustomEventHandlersCamelCase<T> {
+  onAbort?: EventHandlerUnion<T, Event> | undefined
+  onAnimationend?: EventHandlerUnion<T, AnimationEvent> | undefined
+  onAnimationiteration?: EventHandlerUnion<T, AnimationEvent> | undefined
+  onAnimationstart?: EventHandlerUnion<T, AnimationEvent> | undefined
+  onAuxclick?: EventHandlerUnion<T, MouseEvent> | undefined
+  onBeforeinput?: InputEventHandlerUnion<T, InputEvent> | undefined
+  onBeforetoggle?: EventHandlerUnion<T, ToggleEvent> | undefined
+  onBlur?: FocusEventHandlerUnion<T, FocusEvent> | undefined
+  onCanplay?: EventHandlerUnion<T, Event> | undefined
+  onCanplaythrough?: EventHandlerUnion<T, Event> | undefined
+  onChange?: ChangeEventHandlerUnion<T, Event> | undefined
+  onClick?: EventHandlerUnion<T, MouseEvent> | undefined
+  onContextmenu?: EventHandlerUnion<T, MouseEvent> | undefined
+  onDblclick?: EventHandlerUnion<T, MouseEvent> | undefined
+  onDrag?: EventHandlerUnion<T, DragEvent> | undefined
+  onDragend?: EventHandlerUnion<T, DragEvent> | undefined
+  onDragenter?: EventHandlerUnion<T, DragEvent> | undefined
+  onDragleave?: EventHandlerUnion<T, DragEvent> | undefined
+  onDragover?: EventHandlerUnion<T, DragEvent> | undefined
+  onDragstart?: EventHandlerUnion<T, DragEvent> | undefined
+  onDrop?: EventHandlerUnion<T, DragEvent> | undefined
+  onDurationchange?: EventHandlerUnion<T, Event> | undefined
+  onEmptied?: EventHandlerUnion<T, Event> | undefined
+  onEnded?: EventHandlerUnion<T, Event> | undefined
+  onError?: EventHandlerUnion<T, Event> | undefined
+  onFocus?: FocusEventHandlerUnion<T, FocusEvent> | undefined
+  onGotpointercapture?: EventHandlerUnion<T, PointerEvent> | undefined
+  onInput?: InputEventHandlerUnion<T, InputEvent> | undefined
+  onInvalid?: EventHandlerUnion<T, Event> | undefined
+  onKeydown?: EventHandlerUnion<T, KeyboardEvent> | undefined
+  onKeypress?: EventHandlerUnion<T, KeyboardEvent> | undefined
+  onKeyup?: EventHandlerUnion<T, KeyboardEvent> | undefined
+  onLoad?: EventHandlerUnion<T, Event> | undefined
+  onLoadeddata?: EventHandlerUnion<T, Event> | undefined
+  onLoadedmetadata?: EventHandlerUnion<T, Event> | undefined
+  onLoadstart?: EventHandlerUnion<T, Event> | undefined
+  onLostpointercapture?: EventHandlerUnion<T, PointerEvent> | undefined
+  onMousedown?: EventHandlerUnion<T, MouseEvent> | undefined
+  onMouseenter?: EventHandlerUnion<T, MouseEvent> | undefined
+  onMouseleave?: EventHandlerUnion<T, MouseEvent> | undefined
+  onMousemove?: EventHandlerUnion<T, MouseEvent> | undefined
+  onMouseout?: EventHandlerUnion<T, MouseEvent> | undefined
+  onMouseover?: EventHandlerUnion<T, MouseEvent> | undefined
+  onMouseup?: EventHandlerUnion<T, MouseEvent> | undefined
+  onPause?: EventHandlerUnion<T, Event> | undefined
+  onPlay?: EventHandlerUnion<T, Event> | undefined
+  onPlaying?: EventHandlerUnion<T, Event> | undefined
+  onPointercancel?: EventHandlerUnion<T, PointerEvent> | undefined
+  onPointerdown?: EventHandlerUnion<T, PointerEvent> | undefined
+  onPointerenter?: EventHandlerUnion<T, PointerEvent> | undefined
+  onPointerleave?: EventHandlerUnion<T, PointerEvent> | undefined
+  onPointermove?: EventHandlerUnion<T, PointerEvent> | undefined
+  onPointerout?: EventHandlerUnion<T, PointerEvent> | undefined
+  onPointerover?: EventHandlerUnion<T, PointerEvent> | undefined
+  onPointerup?: EventHandlerUnion<T, PointerEvent> | undefined
+  onProgress?: EventHandlerUnion<T, ProgressEvent> | undefined
+  onRatechange?: EventHandlerUnion<T, Event> | undefined
+  onReset?: EventHandlerUnion<T, Event> | undefined
+  onScroll?: EventHandlerUnion<T, Event> | undefined
+  onScrollend?: EventHandlerUnion<T, Event> | undefined
+  onSeeked?: EventHandlerUnion<T, Event> | undefined
+  onSeeking?: EventHandlerUnion<T, Event> | undefined
+  onSelect?: EventHandlerUnion<T, Event> | undefined
+  onStalled?: EventHandlerUnion<T, Event> | undefined
+  onSubmit?: EventHandlerUnion<T, SubmitEvent> | undefined
+  onSuspend?: EventHandlerUnion<T, Event> | undefined
+  onTimeupdate?: EventHandlerUnion<T, Event> | undefined
+  onToggle?: EventHandlerUnion<T, ToggleEvent> | undefined
+  onTouchcancel?: EventHandlerUnion<T, TouchEvent> | undefined
+  onTouchend?: EventHandlerUnion<T, TouchEvent> | undefined
+  onTouchmove?: EventHandlerUnion<T, TouchEvent> | undefined
+  onTouchstart?: EventHandlerUnion<T, TouchEvent> | undefined
+  onTransitionstart?: EventHandlerUnion<T, TransitionEvent> | undefined
+  onTransitionend?: EventHandlerUnion<T, TransitionEvent> | undefined
+  onTransitionrun?: EventHandlerUnion<T, TransitionEvent> | undefined
+  onTransitioncancel?: EventHandlerUnion<T, TransitionEvent> | undefined
+  onVolumechange?: EventHandlerUnion<T, Event> | undefined
+  onWaiting?: EventHandlerUnion<T, Event> | undefined
+  onWheel?: EventHandlerUnion<T, WheelEvent> | undefined
+}
 
 export interface CSSProperties
-  extends CSS.Properties<string | number>,
-    CSS.PropertiesHyphen<string | number> {
+  extends csstype.Properties<string | number>,
+    csstype.PropertiesHyphen<string | number> {
   /**
    * The index signature was removed to enable closed typing for style
    * using CSSType. You're able to use type assertion or module augmentation
@@ -42,148 +307,229 @@ export interface CSSProperties
   [v: `--${string}`]: string | number | undefined
 }
 
-type Booleanish = boolean | 'true' | 'false'
-type Numberish = number | string
+type HTMLAutocapitalize =
+  | 'off'
+  | 'none'
+  | 'on'
+  | 'sentences'
+  | 'words'
+  | 'characters'
+type HTMLDir = 'ltr' | 'rtl' | 'auto'
+type HTMLFormEncType =
+  | 'application/x-www-form-urlencoded'
+  | 'multipart/form-data'
+  | 'text/plain'
+type HTMLFormMethod = 'post' | 'get' | 'dialog'
+type HTMLCrossorigin = 'anonymous' | 'use-credentials' | ''
+type HTMLReferrerPolicy =
+  | 'no-referrer'
+  | 'no-referrer-when-downgrade'
+  | 'origin'
+  | 'origin-when-cross-origin'
+  | 'same-origin'
+  | 'strict-origin'
+  | 'strict-origin-when-cross-origin'
+  | 'unsafe-url'
+type HTMLIframeSandbox =
+  | 'allow-downloads-without-user-activation'
+  | 'allow-downloads'
+  | 'allow-forms'
+  | 'allow-modals'
+  | 'allow-orientation-lock'
+  | 'allow-pointer-lock'
+  | 'allow-popups'
+  | 'allow-popups-to-escape-sandbox'
+  | 'allow-presentation'
+  | 'allow-same-origin'
+  | 'allow-scripts'
+  | 'allow-storage-access-by-user-activation'
+  | 'allow-top-navigation'
+  | 'allow-top-navigation-by-user-activation'
+  | 'allow-top-navigation-to-custom-protocols'
+type HTMLLinkAs =
+  | 'audio'
+  | 'document'
+  | 'embed'
+  | 'fetch'
+  | 'font'
+  | 'image'
+  | 'object'
+  | 'script'
+  | 'style'
+  | 'track'
+  | 'video'
+  | 'worker'
 
 // All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/
 export interface AriaAttributes {
   /** Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. */
-  'aria-activedescendant'?: string
+  'aria-activedescendant'?: string | undefined
   /** Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. */
-  'aria-atomic'?: Booleanish
+  'aria-atomic'?: boolean | 'false' | 'true' | undefined
   /**
    * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
    * presented if they are made.
    */
-  'aria-autocomplete'?: 'none' | 'inline' | 'list' | 'both'
+  'aria-autocomplete'?: 'none' | 'inline' | 'list' | 'both' | undefined
   /** Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. */
-  'aria-busy'?: Booleanish
+  'aria-busy'?: boolean | 'false' | 'true' | undefined
   /**
    * Indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
    * @see aria-pressed @see aria-selected.
    */
-  'aria-checked'?: Booleanish | 'mixed'
+  'aria-checked'?: boolean | 'false' | 'mixed' | 'true' | undefined
   /**
    * Defines the total number of columns in a table, grid, or treegrid.
    * @see aria-colindex.
    */
-  'aria-colcount'?: Numberish
+  'aria-colcount'?: number | string | undefined
   /**
    * Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid.
    * @see aria-colcount @see aria-colspan.
    */
-  'aria-colindex'?: Numberish
+  'aria-colindex'?: number | string | undefined
   /**
    * Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
    * @see aria-colindex @see aria-rowspan.
    */
-  'aria-colspan'?: Numberish
+  'aria-colspan'?: number | string | undefined
   /**
    * Identifies the element (or elements) whose contents or presence are controlled by the current element.
    * @see aria-owns.
    */
-  'aria-controls'?: string
+  'aria-controls'?: string | undefined
   /** Indicates the element that represents the current item within a container or set of related elements. */
-  'aria-current'?: Booleanish | 'page' | 'step' | 'location' | 'date' | 'time'
+  'aria-current'?:
+    | boolean
+    | 'false'
+    | 'true'
+    | 'page'
+    | 'step'
+    | 'location'
+    | 'date'
+    | 'time'
+    | undefined
   /**
    * Identifies the element (or elements) that describes the object.
    * @see aria-labelledby
    */
-  'aria-describedby'?: string
+  'aria-describedby'?: string | undefined
   /**
    * Identifies the element that provides a detailed, extended description for the object.
    * @see aria-describedby.
    */
-  'aria-details'?: string
+  'aria-details'?: string | undefined
   /**
    * Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
    * @see aria-hidden @see aria-readonly.
    */
-  'aria-disabled'?: Booleanish
+  'aria-disabled'?: boolean | 'false' | 'true' | undefined
   /**
    * Indicates what functions can be performed when a dragged object is released on the drop target.
    * @deprecated in ARIA 1.1
    */
-  'aria-dropeffect'?: 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup'
+  'aria-dropeffect'?:
+    | 'none'
+    | 'copy'
+    | 'execute'
+    | 'link'
+    | 'move'
+    | 'popup'
+    | undefined
   /**
    * Identifies the element that provides an error message for the object.
    * @see aria-invalid @see aria-describedby.
    */
-  'aria-errormessage'?: string
+  'aria-errormessage'?: string | undefined
   /** Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. */
-  'aria-expanded'?: Booleanish
+  'aria-expanded'?: boolean | 'false' | 'true' | undefined
   /**
    * Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
    * allows assistive technology to override the general default of reading in document source order.
    */
-  'aria-flowto'?: string
+  'aria-flowto'?: string | undefined
   /**
    * Indicates an element's "grabbed" state in a drag-and-drop operation.
    * @deprecated in ARIA 1.1
    */
-  'aria-grabbed'?: Booleanish
+  'aria-grabbed'?: boolean | 'false' | 'true' | undefined
   /** Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. */
-  'aria-haspopup'?: Booleanish | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog'
+  'aria-haspopup'?:
+    | boolean
+    | 'false'
+    | 'true'
+    | 'menu'
+    | 'listbox'
+    | 'tree'
+    | 'grid'
+    | 'dialog'
+    | undefined
   /**
    * Indicates whether the element is exposed to an accessibility API.
    * @see aria-disabled.
    */
-  'aria-hidden'?: Booleanish
+  'aria-hidden'?: boolean | 'false' | 'true' | undefined
   /**
    * Indicates the entered value does not conform to the format expected by the application.
    * @see aria-errormessage.
    */
-  'aria-invalid'?: Booleanish | 'grammar' | 'spelling'
+  'aria-invalid'?:
+    | boolean
+    | 'false'
+    | 'true'
+    | 'grammar'
+    | 'spelling'
+    | undefined
   /** Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. */
-  'aria-keyshortcuts'?: string
+  'aria-keyshortcuts'?: string | undefined
   /**
    * Defines a string value that labels the current element.
    * @see aria-labelledby.
    */
-  'aria-label'?: string
+  'aria-label'?: string | undefined
   /**
    * Identifies the element (or elements) that labels the current element.
    * @see aria-describedby.
    */
-  'aria-labelledby'?: string
+  'aria-labelledby'?: string | undefined
   /** Defines the hierarchical level of an element within a structure. */
-  'aria-level'?: Numberish
+  'aria-level'?: number | string | undefined
   /** Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. */
-  'aria-live'?: 'off' | 'assertive' | 'polite'
+  'aria-live'?: 'off' | 'assertive' | 'polite' | undefined
   /** Indicates whether an element is modal when displayed. */
-  'aria-modal'?: Booleanish
+  'aria-modal'?: boolean | 'false' | 'true' | undefined
   /** Indicates whether a text box accepts multiple lines of input or only a single line. */
-  'aria-multiline'?: Booleanish
+  'aria-multiline'?: boolean | 'false' | 'true' | undefined
   /** Indicates that the user may select more than one item from the current selectable descendants. */
-  'aria-multiselectable'?: Booleanish
+  'aria-multiselectable'?: boolean | 'false' | 'true' | undefined
   /** Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. */
-  'aria-orientation'?: 'horizontal' | 'vertical'
+  'aria-orientation'?: 'horizontal' | 'vertical' | undefined
   /**
    * Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
    * between DOM elements where the DOM hierarchy cannot be used to represent the relationship.
    * @see aria-controls.
    */
-  'aria-owns'?: string
+  'aria-owns'?: string | undefined
   /**
    * Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
    * A hint could be a sample value or a brief description of the expected format.
    */
-  'aria-placeholder'?: string
+  'aria-placeholder'?: string | undefined
   /**
    * Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
    * @see aria-setsize.
    */
-  'aria-posinset'?: Numberish
+  'aria-posinset'?: number | string | undefined
   /**
    * Indicates the current "pressed" state of toggle buttons.
    * @see aria-checked @see aria-selected.
    */
-  'aria-pressed'?: Booleanish | 'mixed'
+  'aria-pressed'?: boolean | 'false' | 'mixed' | 'true' | undefined
   /**
    * Indicates that the element is not editable, but is otherwise operable.
    * @see aria-disabled.
    */
-  'aria-readonly'?: Booleanish
+  'aria-readonly'?: boolean | 'false' | 'true' | undefined
   /**
    * Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.
    * @see aria-atomic.
@@ -200,115 +546,155 @@ export interface AriaAttributes {
     | 'text additions'
     | 'text removals'
   /** Indicates that user input is required on the element before a form may be submitted. */
-  'aria-required'?: Booleanish
+  'aria-required'?: boolean | 'false' | 'true' | undefined
   /** Defines a human-readable, author-localized description for the role of an element. */
-  'aria-roledescription'?: string
+  'aria-roledescription'?: string | undefined
   /**
    * Defines the total number of rows in a table, grid, or treegrid.
    * @see aria-rowindex.
    */
-  'aria-rowcount'?: Numberish
+  'aria-rowcount'?: number | string | undefined
   /**
    * Defines an element's row index or position with respect to the total number of rows within a table, grid, or treegrid.
    * @see aria-rowcount @see aria-rowspan.
    */
-  'aria-rowindex'?: Numberish
+  'aria-rowindex'?: number | string | undefined
   /**
    * Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
    * @see aria-rowindex @see aria-colspan.
    */
-  'aria-rowspan'?: Numberish
+  'aria-rowspan'?: number | string | undefined
   /**
    * Indicates the current "selected" state of various widgets.
    * @see aria-checked @see aria-pressed.
    */
-  'aria-selected'?: Booleanish
+  'aria-selected'?: boolean | 'false' | 'true' | undefined
   /**
    * Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
    * @see aria-posinset.
    */
-  'aria-setsize'?: Numberish
+  'aria-setsize'?: number | string | undefined
   /** Indicates if items in a table or grid are sorted in ascending or descending order. */
-  'aria-sort'?: 'none' | 'ascending' | 'descending' | 'other'
+  'aria-sort'?: 'none' | 'ascending' | 'descending' | 'other' | undefined
   /** Defines the maximum allowed value for a range widget. */
-  'aria-valuemax'?: Numberish
+  'aria-valuemax'?: number | string | undefined
   /** Defines the minimum allowed value for a range widget. */
-  'aria-valuemin'?: Numberish
+  'aria-valuemin'?: number | string | undefined
   /**
    * Defines the current value for a range widget.
    * @see aria-valuetext.
    */
-  'aria-valuenow'?: Numberish
+  'aria-valuenow'?: number | string | undefined
   /** Defines the human readable text alternative of aria-valuenow for a range widget. */
-  'aria-valuetext'?: string
+  'aria-valuetext'?: string | undefined
+  role?:
+    | 'alert'
+    | 'alertdialog'
+    | 'application'
+    | 'article'
+    | 'banner'
+    | 'button'
+    | 'cell'
+    | 'checkbox'
+    | 'columnheader'
+    | 'combobox'
+    | 'complementary'
+    | 'contentinfo'
+    | 'definition'
+    | 'dialog'
+    | 'directory'
+    | 'document'
+    | 'feed'
+    | 'figure'
+    | 'form'
+    | 'grid'
+    | 'gridcell'
+    | 'group'
+    | 'heading'
+    | 'img'
+    | 'link'
+    | 'list'
+    | 'listbox'
+    | 'listitem'
+    | 'log'
+    | 'main'
+    | 'marquee'
+    | 'math'
+    | 'menu'
+    | 'menubar'
+    | 'menuitem'
+    | 'menuitemcheckbox'
+    | 'menuitemradio'
+    | 'meter'
+    | 'navigation'
+    | 'none'
+    | 'note'
+    | 'option'
+    | 'presentation'
+    | 'progressbar'
+    | 'radio'
+    | 'radiogroup'
+    | 'region'
+    | 'row'
+    | 'rowgroup'
+    | 'rowheader'
+    | 'scrollbar'
+    | 'search'
+    | 'searchbox'
+    | 'separator'
+    | 'slider'
+    | 'spinbutton'
+    | 'status'
+    | 'switch'
+    | 'tab'
+    | 'table'
+    | 'tablist'
+    | 'tabpanel'
+    | 'term'
+    | 'textbox'
+    | 'timer'
+    | 'toolbar'
+    | 'tooltip'
+    | 'tree'
+    | 'treegrid'
+    | 'treeitem'
 }
 
-// Vue's style normalization supports nested arrays
-export type StyleValue =
-  | false
-  | null
-  | undefined
-  | string
-  | CSSProperties
-  | Array<StyleValue>
-
-export interface HTMLAttributes extends AriaAttributes, EventHandlers<Events> {
-  innerHTML?: string
-
-  class?: any
+export interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+  accessKey?: string | undefined
+  class?: ClassValue
+  contenteditable?: boolean | 'plaintext-only' | 'inherit' | undefined
+  contextmenu?: string | undefined
+  dir?: HTMLDir | undefined
+  draggable?: boolean | 'false' | 'true' | undefined
+  hidden?: boolean | 'hidden' | 'until-found' | undefined
+  id?: string | undefined
+  inert?: boolean | undefined
+  lang?: string | undefined
+  spellcheck?: boolean | undefined
   style?: StyleValue
-
-  // Standard HTML Attributes
-  accesskey?: string
-  contenteditable?: Booleanish | 'inherit' | 'plaintext-only'
-  contextmenu?: string
-  dir?: string
-  draggable?: Booleanish
-  hidden?: Booleanish | '' | 'hidden' | 'until-found'
-  id?: string
-  inert?: Booleanish
-  lang?: string
-  placeholder?: string
-  spellcheck?: Booleanish
-  tabindex?: Numberish
-  title?: string
-  translate?: 'yes' | 'no'
-
-  // Unknown
-  radiogroup?: string // <command>, <menuitem>
-
-  // WAI-ARIA
-  role?: string
-
-  // RDFa Attributes
-  about?: string
-  datatype?: string
-  inlist?: any
-  prefix?: string
-  property?: string
-  resource?: string
-  typeof?: string
-  vocab?: string
-
-  // Non-standard Attributes
-  autocapitalize?: string
-  autocorrect?: string
-  autosave?: string
-  color?: string
-  itemprop?: string
-  itemscope?: Booleanish
-  itemtype?: string
-  itemid?: string
-  itemref?: string
-  results?: Numberish
-  security?: string
-  unselectable?: 'on' | 'off'
-
-  // Living Standard
-  /**
-   * Hints at the type of data that might be entered by the user while editing the element or its contents
-   * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute
-   */
+  tabindex?: number | string | undefined
+  title?: string | undefined
+  translate?: 'yes' | 'no' | undefined
+  about?: string | undefined
+  datatype?: string | undefined
+  inlist?: any | undefined
+  popover?: boolean | 'manual' | 'auto' | undefined
+  prefix?: string | undefined
+  property?: string | undefined
+  resource?: string | undefined
+  typeof?: string | undefined
+  vocab?: string | undefined
+  autocapitalize?: HTMLAutocapitalize | undefined
+  slot?: string | undefined
+  color?: string | undefined
+  itemprop?: string | undefined
+  itemscope?: boolean | undefined
+  itemtype?: string | undefined
+  itemid?: string | undefined
+  itemref?: string | undefined
+  part?: string | undefined
+  exportparts?: string | undefined
   inputmode?:
     | 'none'
     | 'text'
@@ -318,213 +704,175 @@ export interface HTMLAttributes extends AriaAttributes, EventHandlers<Events> {
     | 'numeric'
     | 'decimal'
     | 'search'
-  /**
-   * Specify that a standard HTML element should behave like a defined custom built-in element
-   * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is
-   */
-  is?: string
+    | undefined
+  contentEditable?: boolean | 'plaintext-only' | 'inherit' | undefined
+  contextMenu?: string | undefined
+  tabIndex?: number | string | undefined
+  autoCapitalize?: HTMLAutocapitalize | undefined
+  itemProp?: string | undefined
+  itemScope?: boolean | undefined
+  itemType?: string | undefined
+  itemId?: string | undefined
+  itemRef?: string | undefined
+  exportParts?: string | undefined
+  inputMode?:
+    | 'none'
+    | 'text'
+    | 'tel'
+    | 'url'
+    | 'email'
+    | 'numeric'
+    | 'decimal'
+    | 'search'
+    | undefined
 }
-
-type HTMLAttributeReferrerPolicy =
-  | ''
-  | 'no-referrer'
-  | 'no-referrer-when-downgrade'
-  | 'origin'
-  | 'origin-when-cross-origin'
-  | 'same-origin'
-  | 'strict-origin'
-  | 'strict-origin-when-cross-origin'
-  | 'unsafe-url'
-
-export interface AnchorHTMLAttributes extends HTMLAttributes {
-  download?: any
-  href?: string
-  hreflang?: string
-  media?: string
-  ping?: string
-  rel?: string
-  target?: string
-  type?: string
-  referrerpolicy?: HTMLAttributeReferrerPolicy
+interface AnchorHTMLAttributes<T> extends HTMLAttributes<T> {
+  download?: any | undefined
+  href?: string | undefined
+  hreflang?: string | undefined
+  media?: string | undefined
+  ping?: string | undefined
+  referrerpolicy?: HTMLReferrerPolicy | undefined
+  rel?: string | undefined
+  target?: string | undefined
+  type?: string | undefined
+  referrerPolicy?: HTMLReferrerPolicy | undefined
 }
-
-export interface AreaHTMLAttributes extends HTMLAttributes {
-  alt?: string
-  coords?: string
-  download?: any
-  href?: string
-  hreflang?: string
-  media?: string
-  referrerpolicy?: HTMLAttributeReferrerPolicy
-  rel?: string
-  shape?: string
-  target?: string
+interface AudioHTMLAttributes<T> extends MediaHTMLAttributes<T> {}
+interface AreaHTMLAttributes<T> extends HTMLAttributes<T> {
+  alt?: string | undefined
+  coords?: string | undefined
+  download?: any | undefined
+  href?: string | undefined
+  hreflang?: string | undefined
+  ping?: string | undefined
+  referrerpolicy?: HTMLReferrerPolicy | undefined
+  rel?: string | undefined
+  shape?: 'rect' | 'circle' | 'poly' | 'default' | undefined
+  target?: string | undefined
+  referrerPolicy?: HTMLReferrerPolicy | undefined
 }
-
-export interface AudioHTMLAttributes extends MediaHTMLAttributes {}
-
-export interface BaseHTMLAttributes extends HTMLAttributes {
-  href?: string
-  target?: string
+interface BaseHTMLAttributes<T> extends HTMLAttributes<T> {
+  href?: string | undefined
+  target?: string | undefined
 }
-
-export interface BlockquoteHTMLAttributes extends HTMLAttributes {
-  cite?: string
+interface BlockquoteHTMLAttributes<T> extends HTMLAttributes<T> {
+  cite?: string | undefined
 }
-
-export interface ButtonHTMLAttributes extends HTMLAttributes {
-  autofocus?: Booleanish
-  disabled?: Booleanish
-  form?: string
-  formaction?: string
-  formenctype?: string
-  formmethod?: string
-  formnovalidate?: Booleanish
-  formtarget?: string
-  name?: string
-  type?: 'submit' | 'reset' | 'button'
-  value?: string | ReadonlyArray<string> | number
+interface ButtonHTMLAttributes<T> extends HTMLAttributes<T> {
+  autofocus?: boolean | undefined
+  disabled?: boolean | undefined
+  form?: string | undefined
+  formaction?: string | SerializableAttributeValue | undefined
+  formenctype?: HTMLFormEncType | undefined
+  formmethod?: HTMLFormMethod | undefined
+  formnovalidate?: boolean | undefined
+  formtarget?: string | undefined
+  popovertarget?: string | undefined
+  popovertargetaction?: 'hide' | 'show' | 'toggle' | undefined
+  name?: string | undefined
+  type?: 'submit' | 'reset' | 'button' | undefined
+  value?: string | undefined
+  formAction?: string | SerializableAttributeValue | undefined
+  formEnctype?: HTMLFormEncType | undefined
+  formMethod?: HTMLFormMethod | undefined
+  formNoValidate?: boolean | undefined
+  formTarget?: string | undefined
+  popoverTarget?: string | undefined
+  popoverTargetAction?: 'hide' | 'show' | 'toggle' | undefined
 }
-
-export interface CanvasHTMLAttributes extends HTMLAttributes {
-  height?: Numberish
-  width?: Numberish
+interface CanvasHTMLAttributes<T> extends HTMLAttributes<T> {
+  width?: number | string | undefined
+  height?: number | string | undefined
 }
-
-export interface ColHTMLAttributes extends HTMLAttributes {
-  span?: Numberish
-  width?: Numberish
+interface ColHTMLAttributes<T> extends HTMLAttributes<T> {
+  span?: number | string | undefined
+  width?: number | string | undefined
 }
-
-export interface ColgroupHTMLAttributes extends HTMLAttributes {
-  span?: Numberish
+interface ColgroupHTMLAttributes<T> extends HTMLAttributes<T> {
+  span?: number | string | undefined
 }
-
-export interface DataHTMLAttributes extends HTMLAttributes {
-  value?: string | ReadonlyArray<string> | number
+interface DataHTMLAttributes<T> extends HTMLAttributes<T> {
+  value?: string | string[] | number | undefined
 }
-
-export interface DetailsHTMLAttributes extends HTMLAttributes {
-  name?: string
-  open?: Booleanish
-  onToggle?: (payload: ToggleEvent) => void
+interface DetailsHtmlAttributes<T> extends HTMLAttributes<T> {
+  open?: boolean | undefined
+  onToggle?: EventHandlerUnion<T, Event> | undefined
+  ontoggle?: EventHandlerUnion<T, Event> | undefined
 }
-
-export interface DelHTMLAttributes extends HTMLAttributes {
-  cite?: string
-  datetime?: string
+interface DialogHtmlAttributes<T> extends HTMLAttributes<T> {
+  open?: boolean | undefined
+  onClose?: EventHandlerUnion<T, Event> | undefined
+  onCancel?: EventHandlerUnion<T, Event> | undefined
 }
-
-export interface DialogHTMLAttributes extends HTMLAttributes {
-  open?: Booleanish
-  onClose?: (payload: Event) => void
+interface EmbedHTMLAttributes<T> extends HTMLAttributes<T> {
+  height?: number | string | undefined
+  src?: string | undefined
+  type?: string | undefined
+  width?: number | string | undefined
 }
-
-export interface EmbedHTMLAttributes extends HTMLAttributes {
-  height?: Numberish
-  src?: string
-  type?: string
-  width?: Numberish
+interface FieldsetHTMLAttributes<T> extends HTMLAttributes<T> {
+  disabled?: boolean | undefined
+  form?: string | undefined
+  name?: string | undefined
 }
-
-export interface FieldsetHTMLAttributes extends HTMLAttributes {
-  disabled?: Booleanish
-  form?: string
-  name?: string
+interface FormHTMLAttributes<T> extends HTMLAttributes<T> {
+  'accept-charset'?: string | undefined
+  action?: string | SerializableAttributeValue | undefined
+  autocomplete?: string | undefined
+  encoding?: HTMLFormEncType | undefined
+  enctype?: HTMLFormEncType | undefined
+  method?: HTMLFormMethod | undefined
+  name?: string | undefined
+  novalidate?: boolean | undefined
+  target?: string | undefined
+  noValidate?: boolean | undefined
 }
-
-export interface FormHTMLAttributes extends HTMLAttributes {
-  acceptcharset?: string
-  action?: string
-  autocomplete?: string
-  enctype?: string
-  method?: string
-  name?: string
-  novalidate?: Booleanish
-  target?: string
+interface IframeHTMLAttributes<T> extends HTMLAttributes<T> {
+  allow?: string | undefined
+  allowfullscreen?: boolean | undefined
+  height?: number | string | undefined
+  loading?: 'eager' | 'lazy' | undefined
+  name?: string | undefined
+  referrerpolicy?: HTMLReferrerPolicy | undefined
+  sandbox?: HTMLIframeSandbox | string | undefined
+  src?: string | undefined
+  srcdoc?: string | undefined
+  width?: number | string | undefined
+  referrerPolicy?: HTMLReferrerPolicy | undefined
 }
-
-export interface HtmlHTMLAttributes extends HTMLAttributes {
-  manifest?: string
+interface ImgHTMLAttributes<T> extends HTMLAttributes<T> {
+  alt?: string | undefined
+  crossorigin?: HTMLCrossorigin | undefined
+  decoding?: 'sync' | 'async' | 'auto' | undefined
+  height?: number | string | undefined
+  ismap?: boolean | undefined
+  isMap?: boolean | undefined
+  loading?: 'eager' | 'lazy' | undefined
+  referrerpolicy?: HTMLReferrerPolicy | undefined
+  referrerPolicy?: HTMLReferrerPolicy | undefined
+  sizes?: string | undefined
+  src?: string | undefined
+  srcset?: string | undefined
+  srcSet?: string | undefined
+  usemap?: string | undefined
+  useMap?: string | undefined
+  width?: number | string | undefined
+  crossOrigin?: HTMLCrossorigin | undefined
+  elementtiming?: string | undefined
+  fetchpriority?: 'high' | 'low' | 'auto' | undefined
 }
-
-export interface IframeHTMLAttributes extends HTMLAttributes {
-  allow?: string
-  allowfullscreen?: Booleanish
-  allowtransparency?: Booleanish
-  /** @deprecated */
-  frameborder?: Numberish
-  height?: Numberish
-  loading?: 'eager' | 'lazy'
-  /** @deprecated */
-  marginheight?: Numberish
-  /** @deprecated */
-  marginwidth?: Numberish
-  name?: string
-  referrerpolicy?: HTMLAttributeReferrerPolicy
-  sandbox?: string
-  /** @deprecated */
-  scrolling?: string
-  seamless?: Booleanish
-  src?: string
-  srcdoc?: string
-  width?: Numberish
-}
-
-export interface ImgHTMLAttributes extends HTMLAttributes {
-  alt?: string
-  crossorigin?: 'anonymous' | 'use-credentials' | ''
-  decoding?: 'async' | 'auto' | 'sync'
-  height?: Numberish
-  loading?: 'eager' | 'lazy'
-  referrerpolicy?: HTMLAttributeReferrerPolicy
-  sizes?: string
-  src?: string
-  srcset?: string
-  usemap?: string
-  width?: Numberish
-}
-
-export interface InsHTMLAttributes extends HTMLAttributes {
-  cite?: string
-  datetime?: string
-}
-
-export type InputTypeHTMLAttribute =
-  | 'button'
-  | 'checkbox'
-  | 'color'
-  | 'date'
-  | 'datetime-local'
-  | 'email'
-  | 'file'
-  | 'hidden'
-  | 'image'
-  | 'month'
-  | 'number'
-  | 'password'
-  | 'radio'
-  | 'range'
-  | 'reset'
-  | 'search'
-  | 'submit'
-  | 'tel'
-  | 'text'
-  | 'time'
-  | 'url'
-  | 'week'
-  | (string & {})
-
-export interface InputHTMLAttributes extends HTMLAttributes {
-  accept?: string
-  alt?: string
-  autocomplete?: string
-  autofocus?: Booleanish
-  capture?: boolean | 'user' | 'environment' // https://www.w3.org/tr/html-media-capture/#the-capture-attribute
-  checked?: Booleanish | any[] | Set<any> // for IDE v-model multi-checkbox support
-  crossorigin?: string
-  disabled?: Booleanish
-  enterKeyHint?:
+interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
+  accept?: string | undefined
+  alt?: string | undefined
+  autocomplete?: string | undefined
+  autocorrect?: 'on' | 'off' | undefined
+  autofocus?: boolean | undefined
+  capture?: boolean | string | undefined
+  checked?: boolean | undefined
+  crossorigin?: HTMLCrossorigin | undefined
+  disabled?: boolean | undefined
+  enterkeyhint?:
     | 'enter'
     | 'done'
     | 'go'
@@ -532,314 +880,384 @@ export interface InputHTMLAttributes extends HTMLAttributes {
     | 'previous'
     | 'search'
     | 'send'
-  form?: string
-  formaction?: string
-  formenctype?: string
-  formmethod?: string
-  formnovalidate?: Booleanish
-  formtarget?: string
-  height?: Numberish
-  indeterminate?: boolean
-  list?: string
-  max?: Numberish
-  maxlength?: Numberish
-  min?: Numberish
-  minlength?: Numberish
-  multiple?: Booleanish
-  name?: string
-  pattern?: string
-  placeholder?: string
-  readonly?: Booleanish
-  required?: Booleanish
-  size?: Numberish
-  src?: string
-  step?: Numberish
-  type?: InputTypeHTMLAttribute
-  value?: any // we support :value to be bound to anything w/ v-model
-  width?: Numberish
+    | undefined
+  form?: string | undefined
+  formaction?: string | SerializableAttributeValue | undefined
+  formenctype?: HTMLFormEncType | undefined
+  formmethod?: HTMLFormMethod | undefined
+  formnovalidate?: boolean | undefined
+  formtarget?: string | undefined
+  height?: number | string | undefined
+  incremental?: boolean | undefined
+  list?: string | undefined
+  max?: number | string | undefined
+  maxlength?: number | string | undefined
+  min?: number | string | undefined
+  minlength?: number | string | undefined
+  multiple?: boolean | undefined
+  name?: string | undefined
+  pattern?: string | undefined
+  placeholder?: string | undefined
+  readonly?: boolean | undefined
+  results?: number | undefined
+  required?: boolean | undefined
+  size?: number | string | undefined
+  src?: string | undefined
+  step?: number | string | undefined
+  type?: string | undefined
+  value?: string | string[] | number | undefined
+  width?: number | string | undefined
+  crossOrigin?: HTMLCrossorigin | undefined
+  formAction?: string | SerializableAttributeValue | undefined
+  formEnctype?: HTMLFormEncType | undefined
+  formMethod?: HTMLFormMethod | undefined
+  formNoValidate?: boolean | undefined
+  formTarget?: string | undefined
+  maxLength?: number | string | undefined
+  minLength?: number | string | undefined
+  readOnly?: boolean | undefined
 }
-
-export interface KeygenHTMLAttributes extends HTMLAttributes {
-  autofocus?: Booleanish
-  challenge?: string
-  disabled?: Booleanish
-  form?: string
-  keytype?: string
-  keyparams?: string
-  name?: string
+interface InsHTMLAttributes<T> extends HTMLAttributes<T> {
+  cite?: string | undefined
+  dateTime?: string | undefined
 }
-
-export interface LabelHTMLAttributes extends HTMLAttributes {
-  for?: string
-  form?: string
+interface KeygenHTMLAttributes<T> extends HTMLAttributes<T> {
+  autofocus?: boolean | undefined
+  challenge?: string | undefined
+  disabled?: boolean | undefined
+  form?: string | undefined
+  keytype?: string | undefined
+  keyparams?: string | undefined
+  name?: string | undefined
 }
-
-export interface LiHTMLAttributes extends HTMLAttributes {
-  value?: string | ReadonlyArray<string> | number
+interface LabelHTMLAttributes<T> extends HTMLAttributes<T> {
+  for?: string | undefined
+  form?: string | undefined
 }
-
-export interface LinkHTMLAttributes extends HTMLAttributes {
-  as?: string
-  crossorigin?: string
-  href?: string
-  hreflang?: string
-  integrity?: string
-  media?: string
-  referrerpolicy?: HTMLAttributeReferrerPolicy
-  rel?: string
-  sizes?: string
-  type?: string
-  charset?: string
+interface LiHTMLAttributes<T> extends HTMLAttributes<T> {
+  value?: number | string | undefined
 }
-
-export interface MapHTMLAttributes extends HTMLAttributes {
-  name?: string
+interface LinkHTMLAttributes<T> extends HTMLAttributes<T> {
+  as?: HTMLLinkAs | undefined
+  crossorigin?: HTMLCrossorigin | undefined
+  disabled?: boolean | undefined
+  fetchpriority?: 'high' | 'low' | 'auto' | undefined
+  href?: string | undefined
+  hreflang?: string | undefined
+  imagesizes?: string | undefined
+  imagesrcset?: string | undefined
+  integrity?: string | undefined
+  media?: string | undefined
+  referrerpolicy?: HTMLReferrerPolicy | undefined
+  rel?: string | undefined
+  sizes?: string | undefined
+  type?: string | undefined
+  crossOrigin?: HTMLCrossorigin | undefined
+  referrerPolicy?: HTMLReferrerPolicy | undefined
 }
-
-export interface MenuHTMLAttributes extends HTMLAttributes {
-  type?: string
+interface MapHTMLAttributes<T> extends HTMLAttributes<T> {
+  name?: string | undefined
 }
-
-export interface MediaHTMLAttributes extends HTMLAttributes {
-  autoplay?: Booleanish
-  controls?: Booleanish
-  controlslist?: string
-  crossorigin?: string
-  loop?: Booleanish
-  mediagroup?: string
-  muted?: Booleanish
-  playsinline?: Booleanish
-  preload?: string
-  src?: string
+interface MediaHTMLAttributes<T> extends HTMLAttributes<T> {
+  autoplay?: boolean | undefined
+  controls?: boolean | undefined
+  crossorigin?: HTMLCrossorigin | undefined
+  loop?: boolean | undefined
+  mediagroup?: string | undefined
+  muted?: boolean | undefined
+  preload?: 'none' | 'metadata' | 'auto' | '' | undefined
+  src?: string | undefined
+  crossOrigin?: HTMLCrossorigin | undefined
+  mediaGroup?: string | undefined
 }
-
-export interface MetaHTMLAttributes extends HTMLAttributes {
-  charset?: string
-  content?: string
-  httpequiv?: string
-  name?: string
+interface MenuHTMLAttributes<T> extends HTMLAttributes<T> {
+  label?: string | undefined
+  type?: 'context' | 'toolbar' | undefined
 }
-
-export interface MeterHTMLAttributes extends HTMLAttributes {
-  form?: string
-  high?: Numberish
-  low?: Numberish
-  max?: Numberish
-  min?: Numberish
-  optimum?: Numberish
-  value?: string | ReadonlyArray<string> | number
+interface MetaHTMLAttributes<T> extends HTMLAttributes<T> {
+  charset?: string | undefined
+  content?: string | undefined
+  'http-equiv'?: string | undefined
+  name?: string | undefined
+  media?: string | undefined
 }
-
-export interface QuoteHTMLAttributes extends HTMLAttributes {
-  cite?: string
+interface MeterHTMLAttributes<T> extends HTMLAttributes<T> {
+  form?: string | undefined
+  high?: number | string | undefined
+  low?: number | string | undefined
+  max?: number | string | undefined
+  min?: number | string | undefined
+  optimum?: number | string | undefined
+  value?: string | string[] | number | undefined
 }
-
-export interface ObjectHTMLAttributes extends HTMLAttributes {
-  classid?: string
-  data?: string
-  form?: string
-  height?: Numberish
-  name?: string
-  type?: string
-  usemap?: string
-  width?: Numberish
-  wmode?: string
+interface QuoteHTMLAttributes<T> extends HTMLAttributes<T> {
+  cite?: string | undefined
 }
-
-export interface OlHTMLAttributes extends HTMLAttributes {
-  reversed?: Booleanish
-  start?: Numberish
-  type?: '1' | 'a' | 'A' | 'i' | 'I'
+interface ObjectHTMLAttributes<T> extends HTMLAttributes<T> {
+  data?: string | undefined
+  form?: string | undefined
+  height?: number | string | undefined
+  name?: string | undefined
+  type?: string | undefined
+  usemap?: string | undefined
+  width?: number | string | undefined
+  useMap?: string | undefined
 }
-
-export interface OptgroupHTMLAttributes extends HTMLAttributes {
-  disabled?: Booleanish
-  label?: string
+interface OlHTMLAttributes<T> extends HTMLAttributes<T> {
+  reversed?: boolean | undefined
+  start?: number | string | undefined
+  type?: '1' | 'a' | 'A' | 'i' | 'I' | undefined
 }
-
-export interface OptionHTMLAttributes extends HTMLAttributes {
-  disabled?: Booleanish
-  label?: string
-  selected?: Booleanish
-  value?: any // we support :value to be bound to anything w/ v-model
+interface OptgroupHTMLAttributes<T> extends HTMLAttributes<T> {
+  disabled?: boolean | undefined
+  label?: string | undefined
 }
-
-export interface OutputHTMLAttributes extends HTMLAttributes {
-  for?: string
-  form?: string
-  name?: string
+interface OptionHTMLAttributes<T> extends HTMLAttributes<T> {
+  disabled?: boolean | undefined
+  label?: string | undefined
+  selected?: boolean | undefined
+  value?: string | string[] | number | undefined
 }
-
-export interface ParamHTMLAttributes extends HTMLAttributes {
-  name?: string
-  value?: string | ReadonlyArray<string> | number
+interface OutputHTMLAttributes<T> extends HTMLAttributes<T> {
+  form?: string | undefined
+  for?: string | undefined
+  name?: string | undefined
 }
-
-export interface ProgressHTMLAttributes extends HTMLAttributes {
-  max?: Numberish
-  value?: string | ReadonlyArray<string> | number
+interface ParamHTMLAttributes<T> extends HTMLAttributes<T> {
+  name?: string | undefined
+  value?: string | string[] | number | undefined
 }
-
-export interface ScriptHTMLAttributes extends HTMLAttributes {
-  async?: Booleanish
-  /** @deprecated */
-  charset?: string
-  crossorigin?: string
-  defer?: Booleanish
-  integrity?: string
-  nomodule?: Booleanish
-  referrerpolicy?: HTMLAttributeReferrerPolicy
-  nonce?: string
-  src?: string
-  type?: string
+interface ProgressHTMLAttributes<T> extends HTMLAttributes<T> {
+  max?: number | string | undefined
+  value?: string | string[] | number | undefined
 }
-
-export interface SelectHTMLAttributes extends HTMLAttributes {
-  autocomplete?: string
-  autofocus?: Booleanish
-  disabled?: Booleanish
-  form?: string
-  multiple?: Booleanish
-  name?: string
-  required?: Booleanish
-  size?: Numberish
-  value?: any // we support :value to be bound to anything w/ v-model
+interface ScriptHTMLAttributes<T> extends HTMLAttributes<T> {
+  async?: boolean | undefined
+  charset?: string | undefined
+  crossorigin?: HTMLCrossorigin | undefined
+  defer?: boolean | undefined
+  integrity?: string | undefined
+  nomodule?: boolean | undefined
+  nonce?: string | undefined
+  referrerpolicy?: HTMLReferrerPolicy | undefined
+  src?: string | undefined
+  type?: string | undefined
+  crossOrigin?: HTMLCrossorigin | undefined
+  noModule?: boolean | undefined
+  referrerPolicy?: HTMLReferrerPolicy | undefined
 }
-
-export interface SourceHTMLAttributes extends HTMLAttributes {
-  media?: string
-  sizes?: string
-  src?: string
-  srcset?: string
-  type?: string
+interface SelectHTMLAttributes<T> extends HTMLAttributes<T> {
+  autocomplete?: string | undefined
+  autofocus?: boolean | undefined
+  disabled?: boolean | undefined
+  form?: string | undefined
+  multiple?: boolean | undefined
+  name?: string | undefined
+  required?: boolean | undefined
+  size?: number | string | undefined
+  value?: string | string[] | number | undefined
 }
-
-export interface StyleHTMLAttributes extends HTMLAttributes {
-  media?: string
-  nonce?: string
-  scoped?: Booleanish
-  type?: string
+interface HTMLSlotElementAttributes<T = HTMLSlotElement>
+  extends HTMLAttributes<T> {
+  name?: string | undefined
 }
-
-export interface TableHTMLAttributes extends HTMLAttributes {
-  cellpadding?: Numberish
-  cellspacing?: Numberish
-  summary?: string
-  width?: Numberish
+interface SourceHTMLAttributes<T> extends HTMLAttributes<T> {
+  media?: string | undefined
+  sizes?: string | undefined
+  src?: string | undefined
+  srcset?: string | undefined
+  type?: string | undefined
+  width?: number | string | undefined
+  height?: number | string | undefined
 }
-
-export interface TextareaHTMLAttributes extends HTMLAttributes {
-  autocomplete?: string
-  autofocus?: Booleanish
-  cols?: Numberish
-  dirname?: string
-  disabled?: Booleanish
-  form?: string
-  maxlength?: Numberish
-  minlength?: Numberish
-  name?: string
-  placeholder?: string
-  readonly?: Booleanish
-  required?: Booleanish
-  rows?: Numberish
-  value?: string | ReadonlyArray<string> | number | null
-  wrap?: string
+interface StyleHTMLAttributes<T> extends HTMLAttributes<T> {
+  media?: string | undefined
+  nonce?: string | undefined
+  scoped?: boolean | undefined
+  type?: string | undefined
 }
-
-export interface TdHTMLAttributes extends HTMLAttributes {
-  align?: 'left' | 'center' | 'right' | 'justify' | 'char'
-  colspan?: Numberish
-  headers?: string
-  rowspan?: Numberish
-  scope?: string
-  abbr?: string
-  height?: Numberish
-  width?: Numberish
-  valign?: 'top' | 'middle' | 'bottom' | 'baseline'
+interface TdHTMLAttributes<T> extends HTMLAttributes<T> {
+  colspan?: number | string | undefined
+  headers?: string | undefined
+  rowspan?: number | string | undefined
+  colSpan?: number | string | undefined
+  rowSpan?: number | string | undefined
 }
-
-export interface ThHTMLAttributes extends HTMLAttributes {
-  align?: 'left' | 'center' | 'right' | 'justify' | 'char'
-  colspan?: Numberish
-  headers?: string
-  rowspan?: Numberish
-  scope?: string
-  abbr?: string
+interface TemplateHTMLAttributes<T extends HTMLTemplateElement>
+  extends HTMLAttributes<T> {
+  content?: DocumentFragment | undefined
 }
-
-export interface TimeHTMLAttributes extends HTMLAttributes {
-  datetime?: string
+interface TextareaHTMLAttributes<T> extends HTMLAttributes<T> {
+  autocomplete?: string | undefined
+  autofocus?: boolean | undefined
+  cols?: number | string | undefined
+  dirname?: string | undefined
+  disabled?: boolean | undefined
+  enterkeyhint?:
+    | 'enter'
+    | 'done'
+    | 'go'
+    | 'next'
+    | 'previous'
+    | 'search'
+    | 'send'
+    | undefined
+  form?: string | undefined
+  maxlength?: number | string | undefined
+  minlength?: number | string | undefined
+  name?: string | undefined
+  placeholder?: string | undefined
+  readonly?: boolean | undefined
+  required?: boolean | undefined
+  rows?: number | string | undefined
+  value?: string | string[] | number | undefined
+  wrap?: 'hard' | 'soft' | 'off' | undefined
+  maxLength?: number | string | undefined
+  minLength?: number | string | undefined
+  readOnly?: boolean | undefined
 }
-
-export interface TrackHTMLAttributes extends HTMLAttributes {
-  default?: Booleanish
-  kind?: string
-  label?: string
-  src?: string
-  srclang?: string
+interface ThHTMLAttributes<T> extends HTMLAttributes<T> {
+  colspan?: number | string | undefined
+  headers?: string | undefined
+  rowspan?: number | string | undefined
+  colSpan?: number | string | undefined
+  rowSpan?: number | string | undefined
+  scope?: 'col' | 'row' | 'rowgroup' | 'colgroup' | undefined
 }
-
-export interface VideoHTMLAttributes extends MediaHTMLAttributes {
-  height?: Numberish
-  playsinline?: Booleanish
-  poster?: string
-  width?: Numberish
-  disablePictureInPicture?: Booleanish
-  disableRemotePlayback?: Booleanish
+interface TimeHTMLAttributes<T> extends HTMLAttributes<T> {
+  datetime?: string | undefined
+  dateTime?: string | undefined
 }
-
-export interface WebViewHTMLAttributes extends HTMLAttributes {
-  allowfullscreen?: Booleanish
-  allowpopups?: Booleanish
-  autoFocus?: Booleanish
-  autosize?: Booleanish
-  blinkfeatures?: string
-  disableblinkfeatures?: string
-  disableguestresize?: Booleanish
-  disablewebsecurity?: Booleanish
-  guestinstance?: string
-  httpreferrer?: string
-  nodeintegration?: Booleanish
-  partition?: string
-  plugins?: Booleanish
-  preload?: string
-  src?: string
-  useragent?: string
-  webpreferences?: string
+interface TrackHTMLAttributes<T> extends HTMLAttributes<T> {
+  default?: boolean | undefined
+  kind?:
+    | 'subtitles'
+    | 'captions'
+    | 'descriptions'
+    | 'chapters'
+    | 'metadata'
+    | undefined
+  label?: string | undefined
+  src?: string | undefined
+  srclang?: string | undefined
 }
-
-export interface SVGAttributes extends AriaAttributes, EventHandlers<Events> {
-  innerHTML?: string
-
-  /**
-   * SVG Styling Attributes
-   * @see https://www.w3.org/TR/SVG/styling.html#ElementSpecificStyling
-   */
-  class?: any
+interface VideoHTMLAttributes<T> extends MediaHTMLAttributes<T> {
+  height?: number | string | undefined
+  playsinline?: boolean | undefined
+  poster?: string | undefined
+  width?: number | string | undefined
+}
+type SVGPreserveAspectRatio =
+  | 'none'
+  | 'xMinYMin'
+  | 'xMidYMin'
+  | 'xMaxYMin'
+  | 'xMinYMid'
+  | 'xMidYMid'
+  | 'xMaxYMid'
+  | 'xMinYMax'
+  | 'xMidYMax'
+  | 'xMaxYMax'
+  | 'xMinYMin meet'
+  | 'xMidYMin meet'
+  | 'xMaxYMin meet'
+  | 'xMinYMid meet'
+  | 'xMidYMid meet'
+  | 'xMaxYMid meet'
+  | 'xMinYMax meet'
+  | 'xMidYMax meet'
+  | 'xMaxYMax meet'
+  | 'xMinYMin slice'
+  | 'xMidYMin slice'
+  | 'xMaxYMin slice'
+  | 'xMinYMid slice'
+  | 'xMidYMid slice'
+  | 'xMaxYMid slice'
+  | 'xMinYMax slice'
+  | 'xMidYMax slice'
+  | 'xMaxYMax slice'
+type ImagePreserveAspectRatio =
+  | SVGPreserveAspectRatio
+  | 'defer none'
+  | 'defer xMinYMin'
+  | 'defer xMidYMin'
+  | 'defer xMaxYMin'
+  | 'defer xMinYMid'
+  | 'defer xMidYMid'
+  | 'defer xMaxYMid'
+  | 'defer xMinYMax'
+  | 'defer xMidYMax'
+  | 'defer xMaxYMax'
+  | 'defer xMinYMin meet'
+  | 'defer xMidYMin meet'
+  | 'defer xMaxYMin meet'
+  | 'defer xMinYMid meet'
+  | 'defer xMidYMid meet'
+  | 'defer xMaxYMid meet'
+  | 'defer xMinYMax meet'
+  | 'defer xMidYMax meet'
+  | 'defer xMaxYMax meet'
+  | 'defer xMinYMin slice'
+  | 'defer xMidYMin slice'
+  | 'defer xMaxYMin slice'
+  | 'defer xMinYMid slice'
+  | 'defer xMidYMid slice'
+  | 'defer xMaxYMid slice'
+  | 'defer xMinYMax slice'
+  | 'defer xMidYMax slice'
+  | 'defer xMaxYMax slice'
+type SVGUnits = 'userSpaceOnUse' | 'objectBoundingBox'
+interface CoreSVGAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+  id?: string | undefined
+  lang?: string | undefined
+  tabIndex?: number | string | undefined
+  tabindex?: number | string | undefined
+}
+interface StylableSVGAttributes {
+  class?: ClassValue
   style?: StyleValue
-
-  color?: string
-  height?: Numberish
-  id?: string
-  lang?: string
-  max?: Numberish
-  media?: string
-  method?: string
-  min?: Numberish
-  name?: string
-  target?: string
-  type?: string
-  width?: Numberish
-
-  // Other HTML properties supported by SVG elements in browsers
-  role?: string
-  tabindex?: Numberish
-  crossOrigin?: 'anonymous' | 'use-credentials' | ''
-
-  // SVG Specific attributes
-  'accent-height'?: Numberish
-  accumulate?: 'none' | 'sum'
-  additive?: 'replace' | 'sum'
+}
+interface TransformableSVGAttributes {
+  transform?: string | undefined
+}
+interface ConditionalProcessingSVGAttributes {
+  requiredExtensions?: string | undefined
+  requiredFeatures?: string | undefined
+  systemLanguage?: string | undefined
+}
+interface ExternalResourceSVGAttributes {
+  externalResourcesRequired?: 'true' | 'false' | undefined
+}
+interface AnimationTimingSVGAttributes {
+  begin?: string | undefined
+  dur?: string | undefined
+  end?: string | undefined
+  min?: string | undefined
+  max?: string | undefined
+  restart?: 'always' | 'whenNotActive' | 'never' | undefined
+  repeatCount?: number | 'indefinite' | undefined
+  repeatDur?: string | undefined
+  fill?: 'freeze' | 'remove' | undefined
+}
+interface AnimationValueSVGAttributes {
+  calcMode?: 'discrete' | 'linear' | 'paced' | 'spline' | undefined
+  values?: string | undefined
+  keyTimes?: string | undefined
+  keySplines?: string | undefined
+  from?: number | string | undefined
+  to?: number | string | undefined
+  by?: number | string | undefined
+}
+interface AnimationAdditionSVGAttributes {
+  attributeName?: string | undefined
+  additive?: 'replace' | 'sum' | undefined
+  accumulate?: 'none' | 'sum' | undefined
+}
+interface AnimationAttributeTargetSVGAttributes {
+  attributeName?: string | undefined
+  attributeType?: 'CSS' | 'XML' | 'auto' | undefined
+}
+interface PresentationSVGAttributes {
   'alignment-baseline'?:
     | 'auto'
     | 'baseline'
@@ -854,543 +1272,980 @@ export interface SVGAttributes extends AriaAttributes, EventHandlers<Events> {
     | 'hanging'
     | 'mathematical'
     | 'inherit'
-  allowReorder?: 'no' | 'yes'
-  alphabetic?: Numberish
-  amplitude?: Numberish
-  'arabic-form'?: 'initial' | 'medial' | 'terminal' | 'isolated'
-  ascent?: Numberish
-  attributeName?: string
-  attributeType?: string
-  autoReverse?: Numberish
-  azimuth?: Numberish
-  baseFrequency?: Numberish
-  'baseline-shift'?: Numberish
-  baseProfile?: Numberish
-  bbox?: Numberish
-  begin?: Numberish
-  bias?: Numberish
-  by?: Numberish
-  calcMode?: Numberish
-  'cap-height'?: Numberish
-  clip?: Numberish
-  'clip-path'?: string
-  clipPathUnits?: Numberish
-  'clip-rule'?: Numberish
-  'color-interpolation'?: Numberish
-  'color-interpolation-filters'?: 'auto' | 'sRGB' | 'linearRGB' | 'inherit'
-  'color-profile'?: Numberish
-  'color-rendering'?: Numberish
-  contentScriptType?: Numberish
-  contentStyleType?: Numberish
-  cursor?: Numberish
-  cx?: Numberish
-  cy?: Numberish
-  d?: string
-  decelerate?: Numberish
-  descent?: Numberish
-  diffuseConstant?: Numberish
-  direction?: Numberish
-  display?: Numberish
-  divisor?: Numberish
-  'dominant-baseline'?: Numberish
-  dur?: Numberish
-  dx?: Numberish
-  dy?: Numberish
-  edgeMode?: Numberish
-  elevation?: Numberish
-  'enable-background'?: Numberish
-  end?: Numberish
-  exponent?: Numberish
-  externalResourcesRequired?: Numberish
-  fill?: string
-  'fill-opacity'?: Numberish
-  'fill-rule'?: 'nonzero' | 'evenodd' | 'inherit'
-  filter?: string
-  filterRes?: Numberish
-  filterUnits?: Numberish
-  'flood-color'?: Numberish
-  'flood-opacity'?: Numberish
-  focusable?: Numberish
-  'font-family'?: string
-  'font-size'?: Numberish
-  'font-size-adjust'?: Numberish
-  'font-stretch'?: Numberish
-  'font-style'?: Numberish
-  'font-variant'?: Numberish
-  'font-weight'?: Numberish
-  format?: Numberish
-  from?: Numberish
-  fx?: Numberish
-  fy?: Numberish
-  g1?: Numberish
-  g2?: Numberish
-  'glyph-name'?: Numberish
-  'glyph-orientation-horizontal'?: Numberish
-  'glyph-orientation-vertical'?: Numberish
-  glyphRef?: Numberish
-  gradientTransform?: string
-  gradientUnits?: string
-  hanging?: Numberish
-  'horiz-adv-x'?: Numberish
-  'horiz-origin-x'?: Numberish
-  href?: string
-  ideographic?: Numberish
-  'image-rendering'?: Numberish
-  in2?: Numberish
-  in?: string
-  intercept?: Numberish
-  k1?: Numberish
-  k2?: Numberish
-  k3?: Numberish
-  k4?: Numberish
-  k?: Numberish
-  kernelMatrix?: Numberish
-  kernelUnitLength?: Numberish
-  kerning?: Numberish
-  keyPoints?: Numberish
-  keySplines?: Numberish
-  keyTimes?: Numberish
-  lengthAdjust?: Numberish
-  'letter-spacing'?: Numberish
-  'lighting-color'?: Numberish
-  limitingConeAngle?: Numberish
-  local?: Numberish
-  'marker-end'?: string
-  markerHeight?: Numberish
-  'marker-mid'?: string
-  'marker-start'?: string
-  markerUnits?: Numberish
-  markerWidth?: Numberish
-  mask?: string
-  maskContentUnits?: Numberish
-  maskUnits?: Numberish
-  mathematical?: Numberish
-  mode?: Numberish
-  numOctaves?: Numberish
-  offset?: Numberish
-  opacity?: Numberish
-  operator?: Numberish
-  order?: Numberish
-  orient?: Numberish
-  orientation?: Numberish
-  origin?: Numberish
-  overflow?: Numberish
-  'overline-position'?: Numberish
-  'overline-thickness'?: Numberish
-  'paint-order'?: Numberish
-  'panose-1'?: Numberish
-  pathLength?: Numberish
-  patternContentUnits?: string
-  patternTransform?: Numberish
-  patternUnits?: string
-  'pointer-events'?: Numberish
-  points?: string
-  pointsAtX?: Numberish
-  pointsAtY?: Numberish
-  pointsAtZ?: Numberish
-  preserveAlpha?: Numberish
-  preserveAspectRatio?: string
-  primitiveUnits?: Numberish
-  r?: Numberish
-  radius?: Numberish
-  refX?: Numberish
-  refY?: Numberish
-  renderingIntent?: Numberish
-  repeatCount?: Numberish
-  repeatDur?: Numberish
-  requiredExtensions?: Numberish
-  requiredFeatures?: Numberish
-  restart?: Numberish
-  result?: string
-  rotate?: Numberish
-  rx?: Numberish
-  ry?: Numberish
-  scale?: Numberish
-  seed?: Numberish
-  'shape-rendering'?: Numberish
-  slope?: Numberish
-  spacing?: Numberish
-  specularConstant?: Numberish
-  specularExponent?: Numberish
-  speed?: Numberish
-  spreadMethod?: string
-  startOffset?: Numberish
-  stdDeviation?: Numberish
-  stemh?: Numberish
-  stemv?: Numberish
-  stitchTiles?: Numberish
-  'stop-color'?: string
-  'stop-opacity'?: Numberish
-  'strikethrough-position'?: Numberish
-  'strikethrough-thickness'?: Numberish
-  string?: Numberish
-  stroke?: string
-  'stroke-dasharray'?: Numberish
-  'stroke-dashoffset'?: Numberish
-  'stroke-linecap'?: 'butt' | 'round' | 'square' | 'inherit'
-  'stroke-linejoin'?: 'miter' | 'round' | 'bevel' | 'inherit'
-  'stroke-miterlimit'?: Numberish
-  'stroke-opacity'?: Numberish
-  'stroke-width'?: Numberish
-  surfaceScale?: Numberish
-  systemLanguage?: Numberish
-  tableValues?: Numberish
-  targetX?: Numberish
-  targetY?: Numberish
-  'text-anchor'?: string
-  'text-decoration'?: Numberish
-  textLength?: Numberish
-  'text-rendering'?: Numberish
-  to?: Numberish
-  transform?: string
-  u1?: Numberish
-  u2?: Numberish
-  'underline-position'?: Numberish
-  'underline-thickness'?: Numberish
-  unicode?: Numberish
-  'unicode-bidi'?: Numberish
-  'unicode-range'?: Numberish
-  'unitsPer-em'?: Numberish
-  'v-alphabetic'?: Numberish
-  values?: string
-  'vector-effect'?: Numberish
-  version?: string
-  'vert-adv-y'?: Numberish
-  'vert-origin-x'?: Numberish
-  'vert-origin-y'?: Numberish
-  'v-hanging'?: Numberish
-  'v-ideographic'?: Numberish
-  viewBox?: string
-  viewTarget?: Numberish
-  visibility?: Numberish
-  'v-mathematical'?: Numberish
-  widths?: Numberish
-  'word-spacing'?: Numberish
-  'writing-mode'?: Numberish
-  x1?: Numberish
-  x2?: Numberish
-  x?: Numberish
-  xChannelSelector?: string
-  'x-height'?: Numberish
-  xlinkActuate?: string
-  xlinkArcrole?: string
-  xlinkHref?: string
-  xlinkRole?: string
-  xlinkShow?: string
-  xlinkTitle?: string
-  xlinkType?: string
-  xmlns?: string
-  xmlnsXlink?: string
-  y1?: Numberish
-  y2?: Numberish
-  y?: Numberish
-  yChannelSelector?: string
-  z?: Numberish
-  zoomAndPan?: string
+  'baseline-shift'?: number | string | undefined
+  clip?: string | undefined
+  'clip-path'?: string | undefined
+  'clip-rule'?: 'nonzero' | 'evenodd' | 'inherit' | undefined
+  color?: string | undefined
+  'color-interpolation'?: 'auto' | 'sRGB' | 'linearRGB' | 'inherit' | undefined
+  'color-interpolation-filters'?:
+    | 'auto'
+    | 'sRGB'
+    | 'linearRGB'
+    | 'inherit'
+    | undefined
+  'color-profile'?: string | undefined
+  'color-rendering'?:
+    | 'auto'
+    | 'optimizeSpeed'
+    | 'optimizeQuality'
+    | 'inherit'
+    | undefined
+  cursor?: string | undefined
+  direction?: 'ltr' | 'rtl' | 'inherit' | undefined
+  display?: string | undefined
+  'dominant-baseline'?:
+    | 'auto'
+    | 'text-bottom'
+    | 'alphabetic'
+    | 'ideographic'
+    | 'middle'
+    | 'central'
+    | 'mathematical'
+    | 'hanging'
+    | 'text-top'
+    | 'inherit'
+  'enable-background'?: string | undefined
+  fill?: string | undefined
+  'fill-opacity'?: number | string | 'inherit' | undefined
+  'fill-rule'?: 'nonzero' | 'evenodd' | 'inherit' | undefined
+  filter?: string | undefined
+  'flood-color'?: string | undefined
+  'flood-opacity'?: number | string | 'inherit' | undefined
+  'font-family'?: string | undefined
+  'font-size'?: string | undefined
+  'font-size-adjust'?: number | string | undefined
+  'font-stretch'?: string | undefined
+  'font-style'?: 'normal' | 'italic' | 'oblique' | 'inherit' | undefined
+  'font-variant'?: string | undefined
+  'font-weight'?: number | string | undefined
+  'glyph-orientation-horizontal'?: string | undefined
+  'glyph-orientation-vertical'?: string | undefined
+  'image-rendering'?:
+    | 'auto'
+    | 'optimizeQuality'
+    | 'optimizeSpeed'
+    | 'inherit'
+    | undefined
+  kerning?: string | undefined
+  'letter-spacing'?: number | string | undefined
+  'lighting-color'?: string | undefined
+  'marker-end'?: string | undefined
+  'marker-mid'?: string | undefined
+  'marker-start'?: string | undefined
+  mask?: string | undefined
+  opacity?: number | string | 'inherit' | undefined
+  overflow?: 'visible' | 'hidden' | 'scroll' | 'auto' | 'inherit' | undefined
+  pathLength?: string | number | undefined
+  'pointer-events'?:
+    | 'bounding-box'
+    | 'visiblePainted'
+    | 'visibleFill'
+    | 'visibleStroke'
+    | 'visible'
+    | 'painted'
+    | 'color'
+    | 'fill'
+    | 'stroke'
+    | 'all'
+    | 'none'
+    | 'inherit'
+  'shape-rendering'?:
+    | 'auto'
+    | 'optimizeSpeed'
+    | 'crispEdges'
+    | 'geometricPrecision'
+    | 'inherit'
+    | undefined
+  'stop-color'?: string | undefined
+  'stop-opacity'?: number | string | 'inherit' | undefined
+  stroke?: string | undefined
+  'stroke-dasharray'?: string | undefined
+  'stroke-dashoffset'?: number | string | undefined
+  'stroke-linecap'?: 'butt' | 'round' | 'square' | 'inherit' | undefined
+  'stroke-linejoin'?:
+    | 'arcs'
+    | 'bevel'
+    | 'miter'
+    | 'miter-clip'
+    | 'round'
+    | 'inherit'
+    | undefined
+  'stroke-miterlimit'?: number | string | 'inherit' | undefined
+  'stroke-opacity'?: number | string | 'inherit' | undefined
+  'stroke-width'?: number | string | undefined
+  'text-anchor'?: 'start' | 'middle' | 'end' | 'inherit' | undefined
+  'text-decoration'?:
+    | 'none'
+    | 'underline'
+    | 'overline'
+    | 'line-through'
+    | 'blink'
+    | 'inherit'
+    | undefined
+  'text-rendering'?:
+    | 'auto'
+    | 'optimizeSpeed'
+    | 'optimizeLegibility'
+    | 'geometricPrecision'
+    | 'inherit'
+  'unicode-bidi'?: string | undefined
+  visibility?: 'visible' | 'hidden' | 'collapse' | 'inherit' | undefined
+  'word-spacing'?: number | string | undefined
+  'writing-mode'?:
+    | 'lr-tb'
+    | 'rl-tb'
+    | 'tb-rl'
+    | 'lr'
+    | 'rl'
+    | 'tb'
+    | 'inherit'
+    | undefined
 }
-
-export interface IntrinsicElementAttributes {
-  a: AnchorHTMLAttributes
-  abbr: HTMLAttributes
-  address: HTMLAttributes
-  area: AreaHTMLAttributes
-  article: HTMLAttributes
-  aside: HTMLAttributes
-  audio: AudioHTMLAttributes
-  b: HTMLAttributes
-  base: BaseHTMLAttributes
-  bdi: HTMLAttributes
-  bdo: HTMLAttributes
-  blockquote: BlockquoteHTMLAttributes
-  body: HTMLAttributes
-  br: HTMLAttributes
-  button: ButtonHTMLAttributes
-  canvas: CanvasHTMLAttributes
-  caption: HTMLAttributes
-  cite: HTMLAttributes
-  code: HTMLAttributes
-  col: ColHTMLAttributes
-  colgroup: ColgroupHTMLAttributes
-  data: DataHTMLAttributes
-  datalist: HTMLAttributes
-  dd: HTMLAttributes
-  del: DelHTMLAttributes
-  details: DetailsHTMLAttributes
-  dfn: HTMLAttributes
-  dialog: DialogHTMLAttributes
-  div: HTMLAttributes
-  dl: HTMLAttributes
-  dt: HTMLAttributes
-  em: HTMLAttributes
-  embed: EmbedHTMLAttributes
-  fieldset: FieldsetHTMLAttributes
-  figcaption: HTMLAttributes
-  figure: HTMLAttributes
-  footer: HTMLAttributes
-  form: FormHTMLAttributes
-  h1: HTMLAttributes
-  h2: HTMLAttributes
-  h3: HTMLAttributes
-  h4: HTMLAttributes
-  h5: HTMLAttributes
-  h6: HTMLAttributes
-  head: HTMLAttributes
-  header: HTMLAttributes
-  hgroup: HTMLAttributes
-  hr: HTMLAttributes
-  html: HtmlHTMLAttributes
-  i: HTMLAttributes
-  iframe: IframeHTMLAttributes
-  img: ImgHTMLAttributes
-  input: InputHTMLAttributes
-  ins: InsHTMLAttributes
-  kbd: HTMLAttributes
-  keygen: KeygenHTMLAttributes
-  label: LabelHTMLAttributes
-  legend: HTMLAttributes
-  li: LiHTMLAttributes
-  link: LinkHTMLAttributes
-  main: HTMLAttributes
-  map: MapHTMLAttributes
-  mark: HTMLAttributes
-  menu: MenuHTMLAttributes
-  meta: MetaHTMLAttributes
-  meter: MeterHTMLAttributes
-  nav: HTMLAttributes
-  noindex: HTMLAttributes
-  noscript: HTMLAttributes
-  object: ObjectHTMLAttributes
-  ol: OlHTMLAttributes
-  optgroup: OptgroupHTMLAttributes
-  option: OptionHTMLAttributes
-  output: OutputHTMLAttributes
-  p: HTMLAttributes
-  param: ParamHTMLAttributes
-  picture: HTMLAttributes
-  pre: HTMLAttributes
-  progress: ProgressHTMLAttributes
-  q: QuoteHTMLAttributes
-  rp: HTMLAttributes
-  rt: HTMLAttributes
-  ruby: HTMLAttributes
-  s: HTMLAttributes
-  samp: HTMLAttributes
-  script: ScriptHTMLAttributes
-  section: HTMLAttributes
-  select: SelectHTMLAttributes
-  small: HTMLAttributes
-  source: SourceHTMLAttributes
-  span: HTMLAttributes
-  strong: HTMLAttributes
-  style: StyleHTMLAttributes
-  sub: HTMLAttributes
-  summary: HTMLAttributes
-  sup: HTMLAttributes
-  table: TableHTMLAttributes
-  template: HTMLAttributes
-  tbody: HTMLAttributes
-  td: TdHTMLAttributes
-  textarea: TextareaHTMLAttributes
-  tfoot: HTMLAttributes
-  th: ThHTMLAttributes
-  thead: HTMLAttributes
-  time: TimeHTMLAttributes
-  title: HTMLAttributes
-  tr: HTMLAttributes
-  track: TrackHTMLAttributes
-  u: HTMLAttributes
-  ul: HTMLAttributes
-  var: HTMLAttributes
-  video: VideoHTMLAttributes
-  wbr: HTMLAttributes
-  webview: WebViewHTMLAttributes
-
-  // SVG
-  svg: SVGAttributes
-
-  animate: SVGAttributes
-  animateMotion: SVGAttributes
-  animateTransform: SVGAttributes
-  circle: SVGAttributes
-  clipPath: SVGAttributes
-  defs: SVGAttributes
-  desc: SVGAttributes
-  ellipse: SVGAttributes
-  feBlend: SVGAttributes
-  feColorMatrix: SVGAttributes
-  feComponentTransfer: SVGAttributes
-  feComposite: SVGAttributes
-  feConvolveMatrix: SVGAttributes
-  feDiffuseLighting: SVGAttributes
-  feDisplacementMap: SVGAttributes
-  feDistantLight: SVGAttributes
-  feDropShadow: SVGAttributes
-  feFlood: SVGAttributes
-  feFuncA: SVGAttributes
-  feFuncB: SVGAttributes
-  feFuncG: SVGAttributes
-  feFuncR: SVGAttributes
-  feGaussianBlur: SVGAttributes
-  feImage: SVGAttributes
-  feMerge: SVGAttributes
-  feMergeNode: SVGAttributes
-  feMorphology: SVGAttributes
-  feOffset: SVGAttributes
-  fePointLight: SVGAttributes
-  feSpecularLighting: SVGAttributes
-  feSpotLight: SVGAttributes
-  feTile: SVGAttributes
-  feTurbulence: SVGAttributes
-  filter: SVGAttributes
-  foreignObject: SVGAttributes
-  g: SVGAttributes
-  image: SVGAttributes
-  line: SVGAttributes
-  linearGradient: SVGAttributes
-  marker: SVGAttributes
-  mask: SVGAttributes
-  metadata: SVGAttributes
-  mpath: SVGAttributes
-  path: SVGAttributes
-  pattern: SVGAttributes
-  polygon: SVGAttributes
-  polyline: SVGAttributes
-  radialGradient: SVGAttributes
-  rect: SVGAttributes
-  stop: SVGAttributes
-  switch: SVGAttributes
-  symbol: SVGAttributes
-  text: SVGAttributes
-  textPath: SVGAttributes
-  tspan: SVGAttributes
-  use: SVGAttributes
-  view: SVGAttributes
+interface AnimationElementSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    ExternalResourceSVGAttributes,
+    ConditionalProcessingSVGAttributes {}
+interface ContainerElementSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    ShapeElementSVGAttributes<T>,
+    Pick<
+      PresentationSVGAttributes,
+      | 'clip-path'
+      | 'mask'
+      | 'cursor'
+      | 'opacity'
+      | 'filter'
+      | 'enable-background'
+      | 'color-interpolation'
+      | 'color-rendering'
+    > {}
+interface FilterPrimitiveElementSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    Pick<PresentationSVGAttributes, 'color-interpolation-filters'> {
+  x?: number | string | undefined
+  y?: number | string | undefined
+  width?: number | string | undefined
+  height?: number | string | undefined
+  result?: string | undefined
 }
-
-export interface Events {
-  // clipboard events
-  onCopy: ClipboardEvent
-  onCut: ClipboardEvent
-  onPaste: ClipboardEvent
-
-  // composition events
-  onCompositionend: CompositionEvent
-  onCompositionstart: CompositionEvent
-  onCompositionupdate: CompositionEvent
-
-  // drag drop events
-  onDrag: DragEvent
-  onDragend: DragEvent
-  onDragenter: DragEvent
-  onDragexit: DragEvent
-  onDragleave: DragEvent
-  onDragover: DragEvent
-  onDragstart: DragEvent
-  onDrop: DragEvent
-
-  // focus events
-  onFocus: FocusEvent
-  onFocusin: FocusEvent
-  onFocusout: FocusEvent
-  onBlur: FocusEvent
-
-  // form events
-  onChange: Event
-  onBeforeinput: Event
-  onInput: Event
-  onReset: Event
-  onSubmit: Event
-  onInvalid: Event
-
-  // image events
-  onLoad: Event
-  onError: Event
-
-  // keyboard events
-  onKeydown: KeyboardEvent
-  onKeypress: KeyboardEvent
-  onKeyup: KeyboardEvent
-
-  // mouse events
-  onAuxclick: MouseEvent
-  onClick: MouseEvent
-  onContextmenu: MouseEvent
-  onDblclick: MouseEvent
-  onMousedown: MouseEvent
-  onMouseenter: MouseEvent
-  onMouseleave: MouseEvent
-  onMousemove: MouseEvent
-  onMouseout: MouseEvent
-  onMouseover: MouseEvent
-  onMouseup: MouseEvent
-
-  // media events
-  onAbort: Event
-  onCanplay: Event
-  onCanplaythrough: Event
-  onDurationchange: Event
-  onEmptied: Event
-  onEncrypted: Event
-  onEnded: Event
-  onLoadeddata: Event
-  onLoadedmetadata: Event
-  onLoadstart: Event
-  onPause: Event
-  onPlay: Event
-  onPlaying: Event
-  onProgress: Event
-  onRatechange: Event
-  onSeeked: Event
-  onSeeking: Event
-  onStalled: Event
-  onSuspend: Event
-  onTimeupdate: Event
-  onVolumechange: Event
-  onWaiting: Event
-
-  // selection events
-  onSelect: Event
-
-  // scroll events
-  onScroll: Event
-  onScrollend: Event
-
-  // touch events
-  onTouchcancel: TouchEvent
-  onTouchend: TouchEvent
-  onTouchmove: TouchEvent
-  onTouchstart: TouchEvent
-
-  // pointer events
-  onPointerdown: PointerEvent
-  onPointermove: PointerEvent
-  onPointerup: PointerEvent
-  onPointercancel: PointerEvent
-  onPointerenter: PointerEvent
-  onPointerleave: PointerEvent
-  onPointerover: PointerEvent
-  onPointerout: PointerEvent
-
-  // wheel events
-  onWheel: WheelEvent
-
-  // animation events
-  onAnimationstart: AnimationEvent
-  onAnimationend: AnimationEvent
-  onAnimationiteration: AnimationEvent
-
-  // transition events
-  onTransitionend: TransitionEvent
-  onTransitionstart: TransitionEvent
+interface SingleInputFilterSVGAttributes {
+  in?: string | undefined
 }
-
-type EventHandlers<E> = {
-  [K in keyof E]?: E[K] extends (...args: any) => any
-    ? E[K]
-    : (payload: E[K]) => void
+interface DoubleInputFilterSVGAttributes {
+  in?: string | undefined
+  in2?: string | undefined
 }
-
-import type { VNodeRef } from '@vue/runtime-core'
+interface FitToViewBoxSVGAttributes {
+  viewBox?: string | undefined
+  preserveAspectRatio?: SVGPreserveAspectRatio | undefined
+}
+interface GradientElementSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes {
+  gradientUnits?: SVGUnits | undefined
+  gradientTransform?: string | undefined
+  spreadMethod?: 'pad' | 'reflect' | 'repeat' | undefined
+  href?: string | undefined
+}
+interface GraphicsElementSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    Pick<
+      PresentationSVGAttributes,
+      | 'clip-rule'
+      | 'mask'
+      | 'pointer-events'
+      | 'cursor'
+      | 'opacity'
+      | 'filter'
+      | 'display'
+      | 'visibility'
+      | 'color-interpolation'
+      | 'color-rendering'
+    > {}
+interface LightSourceElementSVGAttributes<T> extends CoreSVGAttributes<T> {}
+interface NewViewportSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    Pick<PresentationSVGAttributes, 'overflow' | 'clip'> {
+  viewBox?: string | undefined
+}
+interface ShapeElementSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    Pick<
+      PresentationSVGAttributes,
+      | 'color'
+      | 'fill'
+      | 'fill-rule'
+      | 'fill-opacity'
+      | 'stroke'
+      | 'stroke-width'
+      | 'stroke-linecap'
+      | 'stroke-linejoin'
+      | 'stroke-miterlimit'
+      | 'stroke-dasharray'
+      | 'stroke-dashoffset'
+      | 'stroke-opacity'
+      | 'shape-rendering'
+      | 'pathLength'
+    > {}
+interface TextContentElementSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    Pick<
+      PresentationSVGAttributes,
+      | 'font-family'
+      | 'font-style'
+      | 'font-variant'
+      | 'font-weight'
+      | 'font-stretch'
+      | 'font-size'
+      | 'font-size-adjust'
+      | 'kerning'
+      | 'letter-spacing'
+      | 'word-spacing'
+      | 'text-decoration'
+      | 'glyph-orientation-horizontal'
+      | 'glyph-orientation-vertical'
+      | 'direction'
+      | 'unicode-bidi'
+      | 'text-anchor'
+      | 'dominant-baseline'
+      | 'color'
+      | 'fill'
+      | 'fill-rule'
+      | 'fill-opacity'
+      | 'stroke'
+      | 'stroke-width'
+      | 'stroke-linecap'
+      | 'stroke-linejoin'
+      | 'stroke-miterlimit'
+      | 'stroke-dasharray'
+      | 'stroke-dashoffset'
+      | 'stroke-opacity'
+    > {}
+interface ZoomAndPanSVGAttributes {
+  zoomAndPan?: 'disable' | 'magnify' | undefined
+}
+interface AnimateSVGAttributes<T>
+  extends AnimationElementSVGAttributes<T>,
+    AnimationAttributeTargetSVGAttributes,
+    AnimationTimingSVGAttributes,
+    AnimationValueSVGAttributes,
+    AnimationAdditionSVGAttributes,
+    Pick<
+      PresentationSVGAttributes,
+      'color-interpolation' | 'color-rendering'
+    > {}
+interface AnimateMotionSVGAttributes<T>
+  extends AnimationElementSVGAttributes<T>,
+    AnimationTimingSVGAttributes,
+    AnimationValueSVGAttributes,
+    AnimationAdditionSVGAttributes {
+  path?: string | undefined
+  keyPoints?: string | undefined
+  rotate?: number | string | 'auto' | 'auto-reverse' | undefined
+  origin?: 'default' | undefined
+}
+interface AnimateTransformSVGAttributes<T>
+  extends AnimationElementSVGAttributes<T>,
+    AnimationAttributeTargetSVGAttributes,
+    AnimationTimingSVGAttributes,
+    AnimationValueSVGAttributes,
+    AnimationAdditionSVGAttributes {
+  type?: 'translate' | 'scale' | 'rotate' | 'skewX' | 'skewY' | undefined
+}
+interface CircleSVGAttributes<T>
+  extends GraphicsElementSVGAttributes<T>,
+    ShapeElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    StylableSVGAttributes,
+    TransformableSVGAttributes {
+  cx?: number | string | undefined
+  cy?: number | string | undefined
+  r?: number | string | undefined
+}
+interface ClipPathSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    TransformableSVGAttributes,
+    Pick<PresentationSVGAttributes, 'clip-path'> {
+  clipPathUnits?: SVGUnits | undefined
+}
+interface DefsSVGAttributes<T>
+  extends ContainerElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    TransformableSVGAttributes {}
+interface DescSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    StylableSVGAttributes {}
+interface EllipseSVGAttributes<T>
+  extends GraphicsElementSVGAttributes<T>,
+    ShapeElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    TransformableSVGAttributes {
+  cx?: number | string | undefined
+  cy?: number | string | undefined
+  rx?: number | string | undefined
+  ry?: number | string | undefined
+}
+interface FeBlendSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    DoubleInputFilterSVGAttributes,
+    StylableSVGAttributes {
+  mode?: 'normal' | 'multiply' | 'screen' | 'darken' | 'lighten' | undefined
+}
+interface FeColorMatrixSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    SingleInputFilterSVGAttributes,
+    StylableSVGAttributes {
+  type?: 'matrix' | 'saturate' | 'hueRotate' | 'luminanceToAlpha' | undefined
+  values?: string | undefined
+}
+interface FeComponentTransferSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    SingleInputFilterSVGAttributes,
+    StylableSVGAttributes {}
+interface FeCompositeSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    DoubleInputFilterSVGAttributes,
+    StylableSVGAttributes {
+  operator?: 'over' | 'in' | 'out' | 'atop' | 'xor' | 'arithmetic' | undefined
+  k1?: number | string | undefined
+  k2?: number | string | undefined
+  k3?: number | string | undefined
+  k4?: number | string | undefined
+}
+interface FeConvolveMatrixSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    SingleInputFilterSVGAttributes,
+    StylableSVGAttributes {
+  order?: number | string | undefined
+  kernelMatrix?: string | undefined
+  divisor?: number | string | undefined
+  bias?: number | string | undefined
+  targetX?: number | string | undefined
+  targetY?: number | string | undefined
+  edgeMode?: 'duplicate' | 'wrap' | 'none' | undefined
+  kernelUnitLength?: number | string | undefined
+  preserveAlpha?: 'true' | 'false' | undefined
+}
+interface FeDiffuseLightingSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    SingleInputFilterSVGAttributes,
+    StylableSVGAttributes,
+    Pick<PresentationSVGAttributes, 'color' | 'lighting-color'> {
+  surfaceScale?: number | string | undefined
+  diffuseConstant?: number | string | undefined
+  kernelUnitLength?: number | string | undefined
+}
+interface FeDisplacementMapSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    DoubleInputFilterSVGAttributes,
+    StylableSVGAttributes {
+  scale?: number | string | undefined
+  xChannelSelector?: 'R' | 'G' | 'B' | 'A' | undefined
+  yChannelSelector?: 'R' | 'G' | 'B' | 'A' | undefined
+}
+interface FeDistantLightSVGAttributes<T>
+  extends LightSourceElementSVGAttributes<T> {
+  azimuth?: number | string | undefined
+  elevation?: number | string | undefined
+}
+interface FeDropShadowSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    FilterPrimitiveElementSVGAttributes<T>,
+    StylableSVGAttributes,
+    Pick<PresentationSVGAttributes, 'color' | 'flood-color' | 'flood-opacity'> {
+  dx?: number | string | undefined
+  dy?: number | string | undefined
+  stdDeviation?: number | string | undefined
+}
+interface FeFloodSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    StylableSVGAttributes,
+    Pick<
+      PresentationSVGAttributes,
+      'color' | 'flood-color' | 'flood-opacity'
+    > {}
+interface FeFuncSVGAttributes<T> extends CoreSVGAttributes<T> {
+  type?: 'identity' | 'table' | 'discrete' | 'linear' | 'gamma' | undefined
+  tableValues?: string | undefined
+  slope?: number | string | undefined
+  intercept?: number | string | undefined
+  amplitude?: number | string | undefined
+  exponent?: number | string | undefined
+  offset?: number | string | undefined
+}
+interface FeGaussianBlurSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    SingleInputFilterSVGAttributes,
+    StylableSVGAttributes {
+  stdDeviation?: number | string | undefined
+}
+interface FeImageSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes {
+  preserveAspectRatio?: SVGPreserveAspectRatio | undefined
+  href?: string | undefined
+}
+interface FeMergeSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    StylableSVGAttributes {}
+interface FeMergeNodeSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    SingleInputFilterSVGAttributes {}
+interface FeMorphologySVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    SingleInputFilterSVGAttributes,
+    StylableSVGAttributes {
+  operator?: 'erode' | 'dilate' | undefined
+  radius?: number | string | undefined
+}
+interface FeOffsetSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    SingleInputFilterSVGAttributes,
+    StylableSVGAttributes {
+  dx?: number | string | undefined
+  dy?: number | string | undefined
+}
+interface FePointLightSVGAttributes<T>
+  extends LightSourceElementSVGAttributes<T> {
+  x?: number | string | undefined
+  y?: number | string | undefined
+  z?: number | string | undefined
+}
+interface FeSpecularLightingSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    SingleInputFilterSVGAttributes,
+    StylableSVGAttributes,
+    Pick<PresentationSVGAttributes, 'color' | 'lighting-color'> {
+  surfaceScale?: string | undefined
+  specularConstant?: string | undefined
+  specularExponent?: string | undefined
+  kernelUnitLength?: number | string | undefined
+}
+interface FeSpotLightSVGAttributes<T>
+  extends LightSourceElementSVGAttributes<T> {
+  x?: number | string | undefined
+  y?: number | string | undefined
+  z?: number | string | undefined
+  pointsAtX?: number | string | undefined
+  pointsAtY?: number | string | undefined
+  pointsAtZ?: number | string | undefined
+  specularExponent?: number | string | undefined
+  limitingConeAngle?: number | string | undefined
+}
+interface FeTileSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    SingleInputFilterSVGAttributes,
+    StylableSVGAttributes {}
+interface FeTurbulanceSVGAttributes<T>
+  extends FilterPrimitiveElementSVGAttributes<T>,
+    StylableSVGAttributes {
+  baseFrequency?: number | string | undefined
+  numOctaves?: number | string | undefined
+  seed?: number | string | undefined
+  stitchTiles?: 'stitch' | 'noStitch' | undefined
+  type?: 'fractalNoise' | 'turbulence' | undefined
+}
+interface FilterSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes {
+  filterUnits?: SVGUnits | undefined
+  primitiveUnits?: SVGUnits | undefined
+  x?: number | string | undefined
+  y?: number | string | undefined
+  width?: number | string | undefined
+  height?: number | string | undefined
+  filterRes?: number | string | undefined
+}
+interface ForeignObjectSVGAttributes<T>
+  extends NewViewportSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    TransformableSVGAttributes,
+    Pick<PresentationSVGAttributes, 'display' | 'visibility'> {
+  x?: number | string | undefined
+  y?: number | string | undefined
+  width?: number | string | undefined
+  height?: number | string | undefined
+}
+interface GSVGAttributes<T>
+  extends ContainerElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    TransformableSVGAttributes,
+    Pick<PresentationSVGAttributes, 'display' | 'visibility'> {}
+interface ImageSVGAttributes<T>
+  extends NewViewportSVGAttributes<T>,
+    GraphicsElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    StylableSVGAttributes,
+    TransformableSVGAttributes,
+    Pick<PresentationSVGAttributes, 'color-profile' | 'image-rendering'> {
+  x?: number | string | undefined
+  y?: number | string | undefined
+  width?: number | string | undefined
+  height?: number | string | undefined
+  preserveAspectRatio?: ImagePreserveAspectRatio | undefined
+  href?: string | undefined
+}
+interface LineSVGAttributes<T>
+  extends GraphicsElementSVGAttributes<T>,
+    ShapeElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    TransformableSVGAttributes,
+    Pick<
+      PresentationSVGAttributes,
+      'marker-start' | 'marker-mid' | 'marker-end'
+    > {
+  x1?: number | string | undefined
+  y1?: number | string | undefined
+  x2?: number | string | undefined
+  y2?: number | string | undefined
+}
+interface LinearGradientSVGAttributes<T>
+  extends GradientElementSVGAttributes<T> {
+  x1?: number | string | undefined
+  x2?: number | string | undefined
+  y1?: number | string | undefined
+  y2?: number | string | undefined
+}
+interface MarkerSVGAttributes<T>
+  extends ContainerElementSVGAttributes<T>,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    FitToViewBoxSVGAttributes,
+    Pick<PresentationSVGAttributes, 'overflow' | 'clip'> {
+  markerUnits?: 'strokeWidth' | 'userSpaceOnUse' | undefined
+  refX?: number | string | undefined
+  refY?: number | string | undefined
+  markerWidth?: number | string | undefined
+  markerHeight?: number | string | undefined
+  orient?: string | undefined
+}
+interface MaskSVGAttributes<T>
+  extends Omit<ContainerElementSVGAttributes<T>, 'opacity' | 'filter'>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes {
+  maskUnits?: SVGUnits | undefined
+  maskContentUnits?: SVGUnits | undefined
+  x?: number | string | undefined
+  y?: number | string | undefined
+  width?: number | string | undefined
+  height?: number | string | undefined
+}
+interface MetadataSVGAttributes<T> extends CoreSVGAttributes<T> {}
+interface MPathSVGAttributes<T> extends CoreSVGAttributes<T> {}
+interface PathSVGAttributes<T>
+  extends GraphicsElementSVGAttributes<T>,
+    ShapeElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    TransformableSVGAttributes,
+    Pick<
+      PresentationSVGAttributes,
+      'marker-start' | 'marker-mid' | 'marker-end'
+    > {
+  d?: string | undefined
+  pathLength?: number | string | undefined
+}
+interface PatternSVGAttributes<T>
+  extends ContainerElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    FitToViewBoxSVGAttributes,
+    Pick<PresentationSVGAttributes, 'overflow' | 'clip'> {
+  x?: number | string | undefined
+  y?: number | string | undefined
+  width?: number | string | undefined
+  height?: number | string | undefined
+  patternUnits?: SVGUnits | undefined
+  patternContentUnits?: SVGUnits | undefined
+  patternTransform?: string | undefined
+  href?: string | undefined
+}
+interface PolygonSVGAttributes<T>
+  extends GraphicsElementSVGAttributes<T>,
+    ShapeElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    TransformableSVGAttributes,
+    Pick<
+      PresentationSVGAttributes,
+      'marker-start' | 'marker-mid' | 'marker-end'
+    > {
+  points?: string | undefined
+}
+interface PolylineSVGAttributes<T>
+  extends GraphicsElementSVGAttributes<T>,
+    ShapeElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    TransformableSVGAttributes,
+    Pick<
+      PresentationSVGAttributes,
+      'marker-start' | 'marker-mid' | 'marker-end'
+    > {
+  points?: string | undefined
+}
+interface RadialGradientSVGAttributes<T>
+  extends GradientElementSVGAttributes<T> {
+  cx?: number | string | undefined
+  cy?: number | string | undefined
+  r?: number | string | undefined
+  fx?: number | string | undefined
+  fy?: number | string | undefined
+}
+interface RectSVGAttributes<T>
+  extends GraphicsElementSVGAttributes<T>,
+    ShapeElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    TransformableSVGAttributes {
+  x?: number | string | undefined
+  y?: number | string | undefined
+  width?: number | string | undefined
+  height?: number | string | undefined
+  rx?: number | string | undefined
+  ry?: number | string | undefined
+}
+interface SetSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    StylableSVGAttributes,
+    AnimationTimingSVGAttributes {}
+interface StopSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    StylableSVGAttributes,
+    Pick<PresentationSVGAttributes, 'color' | 'stop-color' | 'stop-opacity'> {
+  offset?: number | string | undefined
+}
+interface SvgSVGAttributes<T>
+  extends ContainerElementSVGAttributes<T>,
+    NewViewportSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    FitToViewBoxSVGAttributes,
+    ZoomAndPanSVGAttributes,
+    PresentationSVGAttributes {
+  version?: string | undefined
+  baseProfile?: string | undefined
+  x?: number | string | undefined
+  y?: number | string | undefined
+  width?: number | string | undefined
+  height?: number | string | undefined
+  contentScriptType?: string | undefined
+  contentStyleType?: string | undefined
+  xmlns?: string | undefined
+  'xmlns:xlink'?: string | undefined
+}
+interface SwitchSVGAttributes<T>
+  extends ContainerElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    TransformableSVGAttributes,
+    Pick<PresentationSVGAttributes, 'display' | 'visibility'> {}
+interface SymbolSVGAttributes<T>
+  extends ContainerElementSVGAttributes<T>,
+    NewViewportSVGAttributes<T>,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    FitToViewBoxSVGAttributes {
+  width?: number | string | undefined
+  height?: number | string | undefined
+  preserveAspectRatio?: SVGPreserveAspectRatio | undefined
+  refX?: number | string | undefined
+  refY?: number | string | undefined
+  viewBox?: string | undefined
+  x?: number | string | undefined
+  y?: number | string | undefined
+}
+interface TextSVGAttributes<T>
+  extends TextContentElementSVGAttributes<T>,
+    GraphicsElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    TransformableSVGAttributes,
+    Pick<PresentationSVGAttributes, 'writing-mode' | 'text-rendering'> {
+  x?: number | string | undefined
+  y?: number | string | undefined
+  dx?: number | string | undefined
+  dy?: number | string | undefined
+  rotate?: number | string | undefined
+  textLength?: number | string | undefined
+  lengthAdjust?: 'spacing' | 'spacingAndGlyphs' | undefined
+}
+interface TextPathSVGAttributes<T>
+  extends TextContentElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    Pick<
+      PresentationSVGAttributes,
+      'alignment-baseline' | 'baseline-shift' | 'display' | 'visibility'
+    > {
+  startOffset?: number | string | undefined
+  method?: 'align' | 'stretch' | undefined
+  spacing?: 'auto' | 'exact' | undefined
+  href?: string | undefined
+}
+interface TSpanSVGAttributes<T>
+  extends TextContentElementSVGAttributes<T>,
+    ConditionalProcessingSVGAttributes,
+    ExternalResourceSVGAttributes,
+    StylableSVGAttributes,
+    Pick<
+      PresentationSVGAttributes,
+      'alignment-baseline' | 'baseline-shift' | 'display' | 'visibility'
+    > {
+  x?: number | string | undefined
+  y?: number | string | undefined
+  dx?: number | string | undefined
+  dy?: number | string | undefined
+  rotate?: number | string | undefined
+  textLength?: number | string | undefined
+  lengthAdjust?: 'spacing' | 'spacingAndGlyphs' | undefined
+}
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use
+ */
+interface UseSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    StylableSVGAttributes,
+    ConditionalProcessingSVGAttributes,
+    GraphicsElementSVGAttributes<T>,
+    PresentationSVGAttributes,
+    ExternalResourceSVGAttributes,
+    TransformableSVGAttributes {
+  x?: number | string | undefined
+  y?: number | string | undefined
+  width?: number | string | undefined
+  height?: number | string | undefined
+  href?: string | undefined
+}
+interface ViewSVGAttributes<T>
+  extends CoreSVGAttributes<T>,
+    ExternalResourceSVGAttributes,
+    FitToViewBoxSVGAttributes,
+    ZoomAndPanSVGAttributes {
+  viewTarget?: string | undefined
+}
+/**
+ * @type {HTMLElementTagNameMap}
+ */
+interface HTMLElementTags {
+  a: AnchorHTMLAttributes<HTMLAnchorElement>
+  abbr: HTMLAttributes<HTMLElement>
+  address: HTMLAttributes<HTMLElement>
+  area: AreaHTMLAttributes<HTMLAreaElement>
+  article: HTMLAttributes<HTMLElement>
+  aside: HTMLAttributes<HTMLElement>
+  audio: AudioHTMLAttributes<HTMLAudioElement>
+  b: HTMLAttributes<HTMLElement>
+  base: BaseHTMLAttributes<HTMLBaseElement>
+  bdi: HTMLAttributes<HTMLElement>
+  bdo: HTMLAttributes<HTMLElement>
+  blockquote: BlockquoteHTMLAttributes<HTMLElement>
+  body: HTMLAttributes<HTMLBodyElement>
+  br: HTMLAttributes<HTMLBRElement>
+  button: ButtonHTMLAttributes<HTMLButtonElement>
+  canvas: CanvasHTMLAttributes<HTMLCanvasElement>
+  caption: HTMLAttributes<HTMLElement>
+  cite: HTMLAttributes<HTMLElement>
+  code: HTMLAttributes<HTMLElement>
+  col: ColHTMLAttributes<HTMLTableColElement>
+  colgroup: ColgroupHTMLAttributes<HTMLTableColElement>
+  data: DataHTMLAttributes<HTMLElement>
+  datalist: HTMLAttributes<HTMLDataListElement>
+  dd: HTMLAttributes<HTMLElement>
+  del: HTMLAttributes<HTMLElement>
+  details: DetailsHtmlAttributes<HTMLDetailsElement>
+  dfn: HTMLAttributes<HTMLElement>
+  dialog: DialogHtmlAttributes<HTMLDialogElement>
+  div: HTMLAttributes<HTMLDivElement>
+  dl: HTMLAttributes<HTMLDListElement>
+  dt: HTMLAttributes<HTMLElement>
+  em: HTMLAttributes<HTMLElement>
+  embed: EmbedHTMLAttributes<HTMLEmbedElement>
+  fieldset: FieldsetHTMLAttributes<HTMLFieldSetElement>
+  figcaption: HTMLAttributes<HTMLElement>
+  figure: HTMLAttributes<HTMLElement>
+  footer: HTMLAttributes<HTMLElement>
+  form: FormHTMLAttributes<HTMLFormElement>
+  h1: HTMLAttributes<HTMLHeadingElement>
+  h2: HTMLAttributes<HTMLHeadingElement>
+  h3: HTMLAttributes<HTMLHeadingElement>
+  h4: HTMLAttributes<HTMLHeadingElement>
+  h5: HTMLAttributes<HTMLHeadingElement>
+  h6: HTMLAttributes<HTMLHeadingElement>
+  head: HTMLAttributes<HTMLHeadElement>
+  header: HTMLAttributes<HTMLElement>
+  hgroup: HTMLAttributes<HTMLElement>
+  hr: HTMLAttributes<HTMLHRElement>
+  html: HTMLAttributes<HTMLHtmlElement>
+  i: HTMLAttributes<HTMLElement>
+  iframe: IframeHTMLAttributes<HTMLIFrameElement>
+  img: ImgHTMLAttributes<HTMLImageElement>
+  input: InputHTMLAttributes<HTMLInputElement>
+  ins: InsHTMLAttributes<HTMLModElement>
+  kbd: HTMLAttributes<HTMLElement>
+  label: LabelHTMLAttributes<HTMLLabelElement>
+  legend: HTMLAttributes<HTMLLegendElement>
+  li: LiHTMLAttributes<HTMLLIElement>
+  link: LinkHTMLAttributes<HTMLLinkElement>
+  main: HTMLAttributes<HTMLElement>
+  map: MapHTMLAttributes<HTMLMapElement>
+  mark: HTMLAttributes<HTMLElement>
+  menu: MenuHTMLAttributes<HTMLElement>
+  meta: MetaHTMLAttributes<HTMLMetaElement>
+  meter: MeterHTMLAttributes<HTMLElement>
+  nav: HTMLAttributes<HTMLElement>
+  noscript: HTMLAttributes<HTMLElement>
+  object: ObjectHTMLAttributes<HTMLObjectElement>
+  ol: OlHTMLAttributes<HTMLOListElement>
+  optgroup: OptgroupHTMLAttributes<HTMLOptGroupElement>
+  option: OptionHTMLAttributes<HTMLOptionElement>
+  output: OutputHTMLAttributes<HTMLElement>
+  p: HTMLAttributes<HTMLParagraphElement>
+  picture: HTMLAttributes<HTMLElement>
+  pre: HTMLAttributes<HTMLPreElement>
+  progress: ProgressHTMLAttributes<HTMLProgressElement>
+  q: QuoteHTMLAttributes<HTMLQuoteElement>
+  rp: HTMLAttributes<HTMLElement>
+  rt: HTMLAttributes<HTMLElement>
+  ruby: HTMLAttributes<HTMLElement>
+  s: HTMLAttributes<HTMLElement>
+  samp: HTMLAttributes<HTMLElement>
+  script: ScriptHTMLAttributes<HTMLScriptElement>
+  search: HTMLAttributes<HTMLElement>
+  section: HTMLAttributes<HTMLElement>
+  select: SelectHTMLAttributes<HTMLSelectElement>
+  slot: HTMLSlotElementAttributes
+  small: HTMLAttributes<HTMLElement>
+  source: SourceHTMLAttributes<HTMLSourceElement>
+  span: HTMLAttributes<HTMLSpanElement>
+  strong: HTMLAttributes<HTMLElement>
+  style: StyleHTMLAttributes<HTMLStyleElement>
+  sub: HTMLAttributes<HTMLElement>
+  summary: HTMLAttributes<HTMLElement>
+  sup: HTMLAttributes<HTMLElement>
+  table: HTMLAttributes<HTMLTableElement>
+  tbody: HTMLAttributes<HTMLTableSectionElement>
+  td: TdHTMLAttributes<HTMLTableCellElement>
+  template: TemplateHTMLAttributes<HTMLTemplateElement>
+  textarea: TextareaHTMLAttributes<HTMLTextAreaElement>
+  tfoot: HTMLAttributes<HTMLTableSectionElement>
+  th: ThHTMLAttributes<HTMLTableCellElement>
+  thead: HTMLAttributes<HTMLTableSectionElement>
+  time: TimeHTMLAttributes<HTMLElement>
+  title: HTMLAttributes<HTMLTitleElement>
+  tr: HTMLAttributes<HTMLTableRowElement>
+  track: TrackHTMLAttributes<HTMLTrackElement>
+  u: HTMLAttributes<HTMLElement>
+  ul: HTMLAttributes<HTMLUListElement>
+  var: HTMLAttributes<HTMLElement>
+  video: VideoHTMLAttributes<HTMLVideoElement>
+  wbr: HTMLAttributes<HTMLElement>
+}
+/**
+ * @type {HTMLElementDeprecatedTagNameMap}
+ */
+interface HTMLElementDeprecatedTags {
+  big: HTMLAttributes<HTMLElement>
+  keygen: KeygenHTMLAttributes<HTMLElement>
+  menuitem: HTMLAttributes<HTMLElement>
+  noindex: HTMLAttributes<HTMLElement>
+  param: ParamHTMLAttributes<HTMLParamElement>
+}
+/**
+ * @type {SVGElementTagNameMap}
+ */
+interface SVGElementTags {
+  animate: AnimateSVGAttributes<SVGAnimateElement>
+  animateMotion: AnimateMotionSVGAttributes<SVGAnimateMotionElement>
+  animateTransform: AnimateTransformSVGAttributes<SVGAnimateTransformElement>
+  circle: CircleSVGAttributes<SVGCircleElement>
+  clipPath: ClipPathSVGAttributes<SVGClipPathElement>
+  defs: DefsSVGAttributes<SVGDefsElement>
+  desc: DescSVGAttributes<SVGDescElement>
+  ellipse: EllipseSVGAttributes<SVGEllipseElement>
+  feBlend: FeBlendSVGAttributes<SVGFEBlendElement>
+  feColorMatrix: FeColorMatrixSVGAttributes<SVGFEColorMatrixElement>
+  feComponentTransfer: FeComponentTransferSVGAttributes<SVGFEComponentTransferElement>
+  feComposite: FeCompositeSVGAttributes<SVGFECompositeElement>
+  feConvolveMatrix: FeConvolveMatrixSVGAttributes<SVGFEConvolveMatrixElement>
+  feDiffuseLighting: FeDiffuseLightingSVGAttributes<SVGFEDiffuseLightingElement>
+  feDisplacementMap: FeDisplacementMapSVGAttributes<SVGFEDisplacementMapElement>
+  feDistantLight: FeDistantLightSVGAttributes<SVGFEDistantLightElement>
+  feDropShadow: FeDropShadowSVGAttributes<SVGFEDropShadowElement>
+  feFlood: FeFloodSVGAttributes<SVGFEFloodElement>
+  feFuncA: FeFuncSVGAttributes<SVGFEFuncAElement>
+  feFuncB: FeFuncSVGAttributes<SVGFEFuncBElement>
+  feFuncG: FeFuncSVGAttributes<SVGFEFuncGElement>
+  feFuncR: FeFuncSVGAttributes<SVGFEFuncRElement>
+  feGaussianBlur: FeGaussianBlurSVGAttributes<SVGFEGaussianBlurElement>
+  feImage: FeImageSVGAttributes<SVGFEImageElement>
+  feMerge: FeMergeSVGAttributes<SVGFEMergeElement>
+  feMergeNode: FeMergeNodeSVGAttributes<SVGFEMergeNodeElement>
+  feMorphology: FeMorphologySVGAttributes<SVGFEMorphologyElement>
+  feOffset: FeOffsetSVGAttributes<SVGFEOffsetElement>
+  fePointLight: FePointLightSVGAttributes<SVGFEPointLightElement>
+  feSpecularLighting: FeSpecularLightingSVGAttributes<SVGFESpecularLightingElement>
+  feSpotLight: FeSpotLightSVGAttributes<SVGFESpotLightElement>
+  feTile: FeTileSVGAttributes<SVGFETileElement>
+  feTurbulence: FeTurbulanceSVGAttributes<SVGFETurbulenceElement>
+  filter: FilterSVGAttributes<SVGFilterElement>
+  foreignObject: ForeignObjectSVGAttributes<SVGForeignObjectElement>
+  g: GSVGAttributes<SVGGElement>
+  image: ImageSVGAttributes<SVGImageElement>
+  line: LineSVGAttributes<SVGLineElement>
+  linearGradient: LinearGradientSVGAttributes<SVGLinearGradientElement>
+  marker: MarkerSVGAttributes<SVGMarkerElement>
+  mask: MaskSVGAttributes<SVGMaskElement>
+  metadata: MetadataSVGAttributes<SVGMetadataElement>
+  mpath: MPathSVGAttributes<SVGMPathElement>
+  path: PathSVGAttributes<SVGPathElement>
+  pattern: PatternSVGAttributes<SVGPatternElement>
+  polygon: PolygonSVGAttributes<SVGPolygonElement>
+  polyline: PolylineSVGAttributes<SVGPolylineElement>
+  radialGradient: RadialGradientSVGAttributes<SVGRadialGradientElement>
+  rect: RectSVGAttributes<SVGRectElement>
+  set: SetSVGAttributes<SVGSetElement>
+  stop: StopSVGAttributes<SVGStopElement>
+  svg: SvgSVGAttributes<SVGSVGElement>
+  switch: SwitchSVGAttributes<SVGSwitchElement>
+  symbol: SymbolSVGAttributes<SVGSymbolElement>
+  text: TextSVGAttributes<SVGTextElement>
+  textPath: TextPathSVGAttributes<SVGTextPathElement>
+  tspan: TSpanSVGAttributes<SVGTSpanElement>
+  use: UseSVGAttributes<SVGUseElement>
+  view: ViewSVGAttributes<SVGViewElement>
+}
+interface IntrinsicElements
+  extends HTMLElementTags,
+    HTMLElementDeprecatedTags,
+    SVGElementTags {}
 
 export type ReservedProps = {
   key?: PropertyKey
@@ -1399,7 +2254,34 @@ export type ReservedProps = {
   ref_key?: string
 }
 
+export interface CustomAttributes<T> {
+  key?: PropertyKey
+  ref?: VNodeRef
+}
+
 export type NativeElements = {
-  [K in keyof IntrinsicElementAttributes]: IntrinsicElementAttributes[K] &
-    ReservedProps
+  [K in keyof IntrinsicElements]: IntrinsicElements[K] & ReservedProps
+}
+
+export type StyleValue =
+  | false
+  | null
+  | undefined
+  | string
+  | CSSProperties
+  | Array<StyleValue>
+
+export type ClassValue = string | { [key: string]: boolean } | ClassValue[]
+
+export type Attributes = NativeElements
+
+export type FunctionalAttributes = {
+  [K in keyof NativeElements]: {
+    class?: ClassValue
+    style?: StyleValue
+  } & CustomEventHandlersCamelCase<
+    K extends keyof HTMLElementTagNameMap
+      ? HTMLElementTagNameMap[K]
+      : HTMLElement
+  >
 }
