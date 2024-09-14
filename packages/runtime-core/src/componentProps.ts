@@ -211,7 +211,17 @@ export function initProps(
     validateProps(rawProps || {}, props, instance)
   }
 
-  if (isStateful) {
+  const hasStatefulPropsDefinition = Boolean(
+    isStateful && instance.propsOptions.length,
+  )
+  const hasFunctionalPropsDefinition = Boolean(
+    !isStateful && instance.type.props,
+  )
+
+  // if no props options are defined we use the fallthrough proxy
+  if (!hasStatefulPropsDefinition && !hasFunctionalPropsDefinition) {
+    instance.props = createFallthroughProxy(instance, props, attrs)
+  } else if (isStateful) {
     // stateful
     instance.props = isSSR ? props : shallowReactive(props)
   } else {
@@ -365,6 +375,42 @@ export function updateProps(
   if (__DEV__) {
     validateProps(rawProps || {}, props, instance)
   }
+}
+
+function createFallthroughProxy(
+  instance: ComponentInternalInstance,
+  props: Data,
+  attrs: Data,
+) {
+  let accessedKeys: Set<string>
+
+  if (__DEV__) {
+    accessedKeys = new Set()
+  }
+
+  return new Proxy(attrs, {
+    get(target, key: string) {
+      if (__DEV__ && instance.isMounted && !accessedKeys.has(key)) {
+        warn(
+          'Do not access props dynamically, we recommend destructuring the props you want to control. The rest will fall through to root element',
+        )
+      } else if (__DEV__ && !instance.isMounted) {
+        accessedKeys.add(key)
+      }
+
+      if (key in props) {
+        return Reflect.get(props, key)
+      }
+
+      const value = target[key]
+
+      delete target[key]
+
+      props[key] = value
+
+      return Reflect.get(props, key)
+    },
+  })
 }
 
 function setFullProps(

@@ -16,6 +16,9 @@ export namespace JSX {
   export interface ElementAttributesProperty {
     $props: {}
   }
+  export interface ElementChildrenAttribute {
+    $slots: {}
+  }
   export interface IntrinsicElements extends NativeElements {
     // allow arbitrary elements
     // @ts-ignore suppress ts:2374 = Duplicate string index signature.
